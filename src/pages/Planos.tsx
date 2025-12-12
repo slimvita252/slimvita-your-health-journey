@@ -24,11 +24,11 @@ interface UserData {
 
 const plans = [
   {
-    id: "weekly",
-    name: "Weekly Plan",
+    id: "daily",
+    name: "Daily Plan",
     price: 4.99,
-    dailyCost: 0.71,
-    period: "week",
+    dailyCost: 4.99,
+    period: "day",
     highlighted: false,
   },
   {
