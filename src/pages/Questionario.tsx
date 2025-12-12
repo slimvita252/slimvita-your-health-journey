@@ -10,16 +10,21 @@ import Logo from "@/components/Logo";
 import ProgressBar from "@/components/questionnaire/ProgressBar";
 import QuestionnaireStep from "@/components/questionnaire/QuestionnaireStep";
 import AnalysisScreen from "@/components/AnalysisScreen";
+import ResultsScreen from "@/components/ResultsScreen";
 import { questions } from "@/data/questionnaireQuestions";
+import { calculateHealthMetrics } from "@/lib/healthCalculations";
 
 interface FormData {
   [key: string]: string | string[] | number;
 }
 
+type ScreenState = "questionnaire" | "analysis" | "results";
+
 const Questionario = () => {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
-  const [showAnalysis, setShowAnalysis] = useState(false);
+  const [screenState, setScreenState] = useState<ScreenState>("questionnaire");
+  const [healthResults, setHealthResults] = useState<ReturnType<typeof calculateHealthMetrics> | null>(null);
   const [formData, setFormData] = useState<FormData>({
     height: 170,
     currentWeight: 75,
@@ -68,13 +73,30 @@ const Questionario = () => {
         });
         return;
       }
-      // Show analysis screen immediately
-      setShowAnalysis(true);
+      
+      // Calculate health metrics
+      const results = calculateHealthMetrics({
+        gender: formData.gender as string || "female",
+        age: formData.age as string || "25-34",
+        height: formData.height as number || 170,
+        currentWeight: formData.currentWeight as number || 75,
+        targetWeight: formData.targetWeight as number || 65,
+        activityLevel: formData.activityLevel as string || "sedentary",
+        goal: formData.goal as string || "lose-weight",
+      });
+      
+      setHealthResults(results);
+      setScreenState("analysis");
     }
   };
 
   const handleAnalysisComplete = () => {
-    // Mark questionnaire as completed and navigate
+    // After analysis, show results
+    setScreenState("results");
+  };
+
+  const handleResultsComplete = () => {
+    // After results, go to plans
     sessionStorage.setItem("slimvita-questionnaire-completed", "true");
     navigate("/planos");
   };
@@ -183,8 +205,13 @@ const Questionario = () => {
   };
 
   // Show analysis screen when triggered
-  if (showAnalysis) {
+  if (screenState === "analysis") {
     return <AnalysisScreen onComplete={handleAnalysisComplete} />;
+  }
+
+  // Show results screen after analysis
+  if (screenState === "results" && healthResults) {
+    return <ResultsScreen results={healthResults} onComplete={handleResultsComplete} />;
   }
 
   return (
