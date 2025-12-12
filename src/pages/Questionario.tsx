@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, ArrowRight, Check, Mail, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight, Mail, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -9,6 +9,7 @@ import { toast } from "@/hooks/use-toast";
 import Logo from "@/components/Logo";
 import ProgressBar from "@/components/questionnaire/ProgressBar";
 import QuestionnaireStep from "@/components/questionnaire/QuestionnaireStep";
+import AnalysisScreen from "@/components/AnalysisScreen";
 import { questions } from "@/data/questionnaireQuestions";
 
 interface FormData {
@@ -18,6 +19,7 @@ interface FormData {
 const Questionario = () => {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
+  const [showAnalysis, setShowAnalysis] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     height: 170,
     currentWeight: 75,
@@ -56,7 +58,7 @@ const Questionario = () => {
     if (currentStep < totalSteps - 1) {
       setCurrentStep((prev) => prev + 1);
     } else {
-      // Submit form
+      // Submit form - validate email first
       const email = formData.email as string;
       if (!email || !email.includes("@")) {
         toast({
@@ -66,14 +68,15 @@ const Questionario = () => {
         });
         return;
       }
-      // Mark questionnaire as completed
-      sessionStorage.setItem("slimvita-questionnaire-completed", "true");
-      toast({
-        title: "Assessment Complete! 🎉",
-        description: "Redirecting to your personalized plans...",
-      });
-      setTimeout(() => navigate("/planos"), 1500);
+      // Show analysis screen immediately
+      setShowAnalysis(true);
     }
+  };
+
+  const handleAnalysisComplete = () => {
+    // Mark questionnaire as completed and navigate
+    sessionStorage.setItem("slimvita-questionnaire-completed", "true");
+    navigate("/planos");
   };
 
   const handleBack = () => {
@@ -178,6 +181,11 @@ const Questionario = () => {
         return null;
     }
   };
+
+  // Show analysis screen when triggered
+  if (showAnalysis) {
+    return <AnalysisScreen onComplete={handleAnalysisComplete} />;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/30 flex flex-col safe-area-top safe-area-bottom">
