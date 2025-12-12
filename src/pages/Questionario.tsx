@@ -180,30 +180,28 @@ const Questionario = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/30 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/30 flex flex-col safe-area-top safe-area-bottom">
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-lg border-b border-border/50">
-        <div className="container mx-auto px-4 py-4">
+      <header className="sticky top-0 z-40 bg-background/95 backdrop-blur-lg border-b border-border/50">
+        <div className="container mx-auto px-4 py-3 sm:py-4">
           <div className="flex items-center justify-between">
             <Logo variant="dark" />
-            <div className="flex items-center gap-4">
-              <span className="hidden sm:block text-sm text-muted-foreground">
-                Your Personal Assessment
-              </span>
-            </div>
+            <span className="text-xs sm:text-sm text-muted-foreground">
+              Personal Assessment
+            </span>
           </div>
         </div>
       </header>
 
       {/* Progress Bar */}
-      <div className="sticky top-[73px] z-30 bg-background/80 backdrop-blur-lg border-b border-border/30 py-4">
+      <div className="sticky top-[57px] sm:top-[65px] z-30 bg-background/95 backdrop-blur-lg border-b border-border/30 py-3 sm:py-4">
         <div className="container mx-auto px-4">
           <ProgressBar current={currentStep + 1} total={totalSteps} />
         </div>
       </div>
 
       {/* Main Content */}
-      <main className="flex-1 py-8 md:py-12">
+      <main className="flex-1 py-6 sm:py-8 md:py-12">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto">
             <AnimatePresence mode="wait">
@@ -222,42 +220,44 @@ const Questionario = () => {
       </main>
 
       {/* Navigation Footer */}
-      <footer className="sticky bottom-0 bg-background/95 backdrop-blur-lg border-t border-border/50 py-4">
+      <footer className="sticky bottom-0 bg-background/98 backdrop-blur-lg border-t border-border/50 py-3 sm:py-4 safe-area-bottom">
         <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto flex items-center justify-between gap-4">
+          <div className="max-w-3xl mx-auto flex items-center justify-between gap-2 sm:gap-4">
             <Button
               variant="outline"
               onClick={handleBack}
               disabled={currentStep === 0}
+              size="lg"
               className={cn(
-                "transition-all",
+                "transition-all px-3 sm:px-4 py-5 sm:py-6 text-sm sm:text-base",
                 currentStep === 0 && "opacity-0 pointer-events-none"
               )}
             >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back
+              <ArrowLeft className="w-4 h-4 mr-1 sm:mr-2" />
+              <span className="hidden xs:inline">Back</span>
             </Button>
 
             <div className="flex-1 text-center">
-              <span className="text-sm text-muted-foreground">
-                {currentStep + 1} of {totalSteps}
+              <span className="text-xs sm:text-sm text-muted-foreground">
+                {currentStep + 1} / {totalSteps}
               </span>
             </div>
 
             <Button
               onClick={handleNext}
               disabled={!canProceed()}
-              className="min-w-[120px] bg-primary hover:bg-primary-dark"
+              size="lg"
+              className="min-w-[100px] sm:min-w-[140px] bg-primary hover:bg-primary-dark px-4 sm:px-6 py-5 sm:py-6 text-sm sm:text-base"
             >
               {currentStep === totalSteps - 1 ? (
                 <>
-                  <Sparkles className="w-4 h-4 mr-2" />
-                  Get My Plan
+                  <Sparkles className="w-4 h-4 mr-1 sm:mr-2" />
+                  <span>Get Plan</span>
                 </>
               ) : (
                 <>
-                  Continue
-                  <ArrowRight className="w-4 h-4 ml-2" />
+                  <span>Continue</span>
+                  <ArrowRight className="w-4 h-4 ml-1 sm:ml-2" />
                 </>
               )}
             </Button>

@@ -70,29 +70,29 @@ const Planos = () => {
 
       <main className="flex-1">
         {/* Hero Section for Plans */}
-        <section className="pt-32 pb-24 bg-gradient-to-b from-accent/50 to-background">
-          <div className="container mx-auto px-4">
+        <section className="pt-24 sm:pt-28 md:pt-32 pb-16 sm:pb-20 md:pb-24 bg-gradient-to-b from-accent/50 to-background">
+          <div className="container mx-auto px-4 sm:px-6">
             {/* Header */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-center mb-16"
+              className="text-center mb-10 sm:mb-12 md:mb-16"
             >
-              <span className="inline-block text-primary font-semibold text-sm uppercase tracking-wider mb-4 bg-primary/10 px-4 py-1.5 rounded-full">
+              <span className="inline-block text-primary font-semibold text-xs sm:text-sm uppercase tracking-wider mb-3 sm:mb-4 bg-primary/10 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full">
                 Your Personal Plan is Ready
               </span>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-foreground mb-6">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-foreground mb-4 sm:mb-6 px-2">
                 Choose Your
                 <span className="text-primary"> Transformation</span>
               </h1>
-              <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto">
+              <p className="text-muted-foreground text-base sm:text-lg md:text-xl max-w-2xl mx-auto px-4">
                 Based on your assessment, we've prepared personalized walking plans. 
                 All plans include a 30-day money-back guarantee.
               </p>
             </motion.div>
 
             {/* Plans Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6 lg:gap-8 max-w-6xl mx-auto">
               {plans.map((plan, index) => (
                 <motion.div
                   key={plan.name}
@@ -100,9 +100,9 @@ const Planos = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
                   className={cn(
-                    "relative rounded-3xl p-8 transition-all duration-500",
+                    "relative rounded-2xl sm:rounded-3xl p-6 sm:p-8 transition-all duration-500",
                     plan.highlighted
-                      ? "bg-gradient-to-br from-primary to-primary-dark text-primary-foreground shadow-2xl shadow-primary/30 md:scale-105 z-10"
+                      ? "bg-gradient-to-br from-primary to-primary-dark text-primary-foreground shadow-2xl shadow-primary/30 md:scale-105 z-10 order-first md:order-none"
                       : "bg-card border-2 border-border hover:border-primary/30 hover:shadow-xl"
                   )}
                 >
@@ -199,19 +199,19 @@ const Planos = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="mt-16 flex flex-wrap items-center justify-center gap-8"
+              className="mt-10 sm:mt-12 md:mt-16 flex flex-col sm:flex-row flex-wrap items-center justify-center gap-4 sm:gap-6 md:gap-8"
             >
               <div className="flex items-center gap-2 text-muted-foreground">
-                <Shield className="w-5 h-5 text-primary" />
-                <span className="text-sm font-medium">30-Day Money-Back Guarantee</span>
+                <Shield className="w-5 h-5 text-primary flex-shrink-0" />
+                <span className="text-sm font-medium">30-Day Money-Back</span>
               </div>
               <div className="flex items-center gap-2 text-muted-foreground">
-                <Clock className="w-5 h-5 text-primary" />
+                <Clock className="w-5 h-5 text-primary flex-shrink-0" />
                 <span className="text-sm font-medium">Cancel Anytime</span>
               </div>
               <div className="flex items-center gap-2 text-muted-foreground">
-                <Award className="w-5 h-5 text-primary" />
-                <span className="text-sm font-medium">150,000+ Happy Users</span>
+                <Award className="w-5 h-5 text-primary flex-shrink-0" />
+                <span className="text-sm font-medium">150,000+ Users</span>
               </div>
             </motion.div>
           </div>
