@@ -66,6 +66,8 @@ const Questionario = () => {
         });
         return;
       }
+      // Mark questionnaire as completed
+      sessionStorage.setItem("slimvita-questionnaire-completed", "true");
       toast({
         title: "Assessment Complete! 🎉",
         description: "Redirecting to your personalized plans...",

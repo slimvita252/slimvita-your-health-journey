@@ -1,65 +1,59 @@
-import { Shield, Award, CheckCircle, Heart } from "lucide-react";
-import { useLanguage } from "@/contexts/LanguageContext";
-import { useScrollAnimation } from "@/hooks/useScrollAnimation";
-import { cn } from "@/lib/utils";
+import { Shield, Award, CheckCircle, Heart, Users, Star } from "lucide-react";
+import { motion } from "framer-motion";
 
 const TrustBadgesSection = () => {
-  const { t } = useLanguage();
-  const { ref, isVisible } = useScrollAnimation();
-
   const badges = [
     {
       icon: Award,
-      title: "Most Loved Wellness Program",
-      subtitle: "2025 Health & Fitness Awards",
+      title: "#1 Walking Program",
+      subtitle: "Best of 2025",
       color: "text-yellow-500",
       bg: "bg-yellow-50",
     },
     {
-      icon: Shield,
-      title: "100% Secure & Private",
-      subtitle: "Your data is encrypted",
+      icon: Users,
+      title: "150,000+ Users",
+      subtitle: "Across America",
       color: "text-blue-500",
       bg: "bg-blue-50",
     },
     {
-      icon: CheckCircle,
-      title: "Clinically Backed Methods",
-      subtitle: "Science-based approach",
-      color: "text-green-500",
-      bg: "bg-green-50",
+      icon: Star,
+      title: "4.9/5 Rating",
+      subtitle: "45,000+ Reviews",
+      color: "text-orange-500",
+      bg: "bg-orange-50",
     },
     {
-      icon: Heart,
-      title: "150,000+ Lives Changed",
-      subtitle: "Real transformations",
-      color: "text-red-500",
-      bg: "bg-red-50",
+      icon: Shield,
+      title: "100% Secure",
+      subtitle: "Data Protected",
+      color: "text-green-500",
+      bg: "bg-green-50",
     },
   ];
 
   return (
-    <section className="py-16 bg-gray-50 border-y border-gray-100">
-      <div 
-        ref={ref}
-        className={cn(
-          "container mx-auto px-6 transition-all duration-700",
-          isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-        )}
-      >
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+    <section className="py-12 bg-accent/50 border-y border-border/30">
+      <div className="container mx-auto px-6">
+        <div className="flex flex-wrap items-center justify-center gap-6 md:gap-12">
           {badges.map((badge, index) => (
-            <div 
+            <motion.div
               key={index}
-              className="flex flex-col items-center text-center p-6 rounded-2xl bg-white shadow-sm hover:shadow-md transition-all duration-300"
-              style={{ animationDelay: `${index * 100}ms` }}
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
+              className="flex items-center gap-3"
             >
-              <div className={cn("w-14 h-14 rounded-xl flex items-center justify-center mb-4", badge.bg)}>
-                <badge.icon className={cn("w-7 h-7", badge.color)} />
+              <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${badge.bg}`}>
+                <badge.icon className={`w-6 h-6 ${badge.color}`} />
               </div>
-              <h3 className="font-semibold text-gray-900 text-sm mb-1">{badge.title}</h3>
-              <p className="text-gray-500 text-xs">{badge.subtitle}</p>
-            </div>
+              <div>
+                <p className="font-semibold text-foreground text-sm">{badge.title}</p>
+                <p className="text-muted-foreground text-xs">{badge.subtitle}</p>
+              </div>
+            </motion.div>
           ))}
         </div>
       </div>
