@@ -1,26 +1,28 @@
 import { Link } from "react-router-dom";
-import { Instagram, Facebook, Youtube, Twitter, Mail, Phone } from "lucide-react";
-import Logo from "./Logo";
+import { Instagram, Facebook, Youtube, Twitter, Mail, Phone, MapPin, ArrowRight } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { Button } from "@/components/ui/button";
 
 const Footer = () => {
+  const { t } = useLanguage();
   const currentYear = new Date().getFullYear();
 
   const footerLinks = {
-    empresa: [
-      { label: "Sobre Nós", href: "/sobre" },
-      { label: "Blog", href: "/blog" },
-      { label: "Carreiras", href: "/carreiras" },
-      { label: "Parceiros", href: "/parceiros" },
+    company: [
+      { label: t("footer.about"), href: "/about" },
+      { label: t("footer.blog"), href: "/blog" },
+      { label: t("footer.careers"), href: "/careers" },
+      { label: t("footer.partners"), href: "/partners" },
     ],
-    suporte: [
-      { label: "Central de Ajuda", href: "/ajuda" },
-      { label: "Contato", href: "/contato" },
-      { label: "FAQ", href: "/faq" },
+    support: [
+      { label: t("footer.helpCenter"), href: "/help" },
+      { label: t("footer.contact"), href: "/contact" },
+      { label: t("footer.faq"), href: "/faq" },
     ],
     legal: [
-      { label: "Termos de Uso", href: "/termos" },
-      { label: "Política de Privacidade", href: "/privacidade" },
-      { label: "Cookies", href: "/cookies" },
+      { label: t("footer.terms"), href: "/terms" },
+      { label: t("footer.privacy"), href: "/privacy" },
+      { label: t("footer.cookies"), href: "/cookies" },
     ],
   };
 
@@ -32,33 +34,53 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="bg-foreground text-primary-foreground">
-      <div className="container mx-auto py-16">
+    <footer id="support" className="bg-gray-900 text-white">
+      {/* Newsletter Section */}
+      <div className="border-b border-gray-800">
+        <div className="container mx-auto px-6 py-12">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div>
+              <h3 className="text-2xl font-heading font-bold mb-2">Stay Updated</h3>
+              <p className="text-gray-400">Get health tips, workout ideas, and exclusive offers.</p>
+            </div>
+            <div className="flex gap-3 w-full md:w-auto">
+              <input
+                type="email"
+                placeholder="Enter your email"
+                className="flex-1 md:w-80 px-5 py-3 rounded-full bg-gray-800 border border-gray-700 text-white placeholder:text-gray-500 focus:outline-none focus:border-primary"
+              />
+              <Button className="rounded-full px-6">
+                Subscribe
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="container mx-auto px-6 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12">
           {/* Brand Column */}
           <div className="lg:col-span-2">
-            <div className="mb-6">
-              <div className="flex items-center gap-2">
-                <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
-                  <span className="text-primary-foreground font-bold text-xl">S</span>
-                </div>
-                <span className="text-2xl font-heading font-bold text-primary-foreground">
-                  Slim<span className="text-primary">Vita</span>
-                </span>
+            <Link to="/" className="inline-flex items-center gap-3 mb-6">
+              <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center">
+                <span className="text-white font-bold text-xl">S</span>
               </div>
-            </div>
-            <p className="text-primary-foreground/70 mb-6 max-w-sm">
-              Transformando vidas através de planos personalizados de saúde e bem-estar. 
-              Sua jornada para uma vida mais saudável começa aqui.
+              <span className="text-2xl font-heading font-bold">
+                Slim<span className="text-primary">Vita</span>
+              </span>
+            </Link>
+            <p className="text-gray-400 mb-6 max-w-sm leading-relaxed">
+              {t("footer.description")}
             </p>
-            <div className="flex gap-4">
+            <div className="flex gap-3">
               {socialLinks.map((social) => (
                 <a
                   key={social.label}
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-full bg-primary-foreground/10 flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+                  className="w-11 h-11 rounded-full bg-gray-800 flex items-center justify-center hover:bg-primary transition-all duration-300"
                   aria-label={social.label}
                 >
                   <social.icon className="w-5 h-5" />
@@ -69,13 +91,13 @@ const Footer = () => {
 
           {/* Links Columns */}
           <div>
-            <h4 className="font-heading font-semibold text-lg mb-4">Empresa</h4>
+            <h4 className="font-heading font-semibold text-lg mb-5">{t("footer.company")}</h4>
             <ul className="space-y-3">
-              {footerLinks.empresa.map((link) => (
+              {footerLinks.company.map((link) => (
                 <li key={link.label}>
                   <Link
                     to={link.href}
-                    className="text-primary-foreground/70 hover:text-primary transition-colors duration-300"
+                    className="text-gray-400 hover:text-primary transition-colors duration-300"
                   >
                     {link.label}
                   </Link>
@@ -85,13 +107,13 @@ const Footer = () => {
           </div>
 
           <div>
-            <h4 className="font-heading font-semibold text-lg mb-4">Suporte</h4>
+            <h4 className="font-heading font-semibold text-lg mb-5">{t("footer.support")}</h4>
             <ul className="space-y-3">
-              {footerLinks.suporte.map((link) => (
+              {footerLinks.support.map((link) => (
                 <li key={link.label}>
                   <Link
                     to={link.href}
-                    className="text-primary-foreground/70 hover:text-primary transition-colors duration-300"
+                    className="text-gray-400 hover:text-primary transition-colors duration-300"
                   >
                     {link.label}
                   </Link>
@@ -101,13 +123,13 @@ const Footer = () => {
           </div>
 
           <div>
-            <h4 className="font-heading font-semibold text-lg mb-4">Legal</h4>
+            <h4 className="font-heading font-semibold text-lg mb-5">{t("footer.legal")}</h4>
             <ul className="space-y-3">
               {footerLinks.legal.map((link) => (
                 <li key={link.label}>
                   <Link
                     to={link.href}
-                    className="text-primary-foreground/70 hover:text-primary transition-colors duration-300"
+                    className="text-gray-400 hover:text-primary transition-colors duration-300"
                   >
                     {link.label}
                   </Link>
@@ -118,25 +140,29 @@ const Footer = () => {
         </div>
 
         {/* Contact Info */}
-        <div className="mt-12 pt-8 border-t border-primary-foreground/10 flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex flex-col md:flex-row items-center gap-6">
+        <div className="mt-16 pt-8 border-t border-gray-800 flex flex-col lg:flex-row items-center justify-between gap-6">
+          <div className="flex flex-col md:flex-row items-center gap-6 text-gray-400">
             <a
-              href="mailto:contato@slimvita.com"
-              className="flex items-center gap-2 text-primary-foreground/70 hover:text-primary transition-colors"
+              href="mailto:support@slimvita.com"
+              className="flex items-center gap-2 hover:text-primary transition-colors"
             >
               <Mail className="w-4 h-4" />
-              contato@slimvita.com
+              support@slimvita.com
             </a>
             <a
-              href="tel:+5511999999999"
-              className="flex items-center gap-2 text-primary-foreground/70 hover:text-primary transition-colors"
+              href="tel:+18005551234"
+              className="flex items-center gap-2 hover:text-primary transition-colors"
             >
               <Phone className="w-4 h-4" />
-              (11) 99999-9999
+              1-800-555-1234
             </a>
+            <span className="flex items-center gap-2">
+              <MapPin className="w-4 h-4" />
+              Austin, TX
+            </span>
           </div>
-          <p className="text-primary-foreground/50 text-sm">
-            © {currentYear} SlimVita. Todos os direitos reservados.
+          <p className="text-gray-500 text-sm">
+            © {currentYear} SlimVita. {t("footer.rights")}
           </p>
         </div>
       </div>
