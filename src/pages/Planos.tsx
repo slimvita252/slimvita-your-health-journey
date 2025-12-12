@@ -153,17 +153,30 @@ const Planos = () => {
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
 
-      {/* Fixed Timer */}
+      {/* Fixed Timer - Urgency/Scarcity Design */}
       <motion.div
         initial={{ y: -100 }}
         animate={{ y: isTimerFixed ? 0 : -100 }}
-        className="fixed top-0 left-0 right-0 z-50 bg-destructive text-destructive-foreground py-3 text-center shadow-lg"
+        className="fixed top-0 left-0 right-0 z-50 py-3 text-center shadow-lg"
+        style={{ background: 'linear-gradient(135deg, hsl(142 69% 45%) 0%, hsl(142 76% 26%) 100%)' }}
       >
-        <div className="flex items-center justify-center gap-2">
-          <Clock className="w-4 h-4" />
-          <span className="font-semibold">
-            Your session expires in: {formatTime(timeLeft)}
+        <div className="flex items-center justify-center gap-3 text-white">
+          <motion.div
+            animate={{ scale: [1, 1.2, 1] }}
+            transition={{ repeat: Infinity, duration: 1.5 }}
+          >
+            <Clock className="w-5 h-5" />
+          </motion.div>
+          <span className="font-semibold text-sm sm:text-base">
+            ⚡ EXCLUSIVE OFFER EXPIRES IN:
           </span>
+          <motion.span 
+            className="font-heading font-bold text-lg sm:text-xl bg-white/20 px-3 py-1 rounded-lg"
+            animate={{ scale: timeLeft <= 60 ? [1, 1.05, 1] : 1 }}
+            transition={{ repeat: timeLeft <= 60 ? Infinity : 0, duration: 0.5 }}
+          >
+            {formatTime(timeLeft)}
+          </motion.span>
         </div>
       </motion.div>
 
@@ -309,17 +322,39 @@ const Planos = () => {
               </div>
             </motion.div>
 
-            {/* Timer Warning */}
+            {/* Timer Warning - Scarcity Style */}
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.5 }}
-              className="flex items-center justify-center gap-2 text-destructive mb-8"
+              className="mb-8 max-w-md mx-auto"
             >
-              <Clock className="w-4 h-4 sm:w-5 sm:h-5" />
-              <span className="text-sm sm:text-base font-medium">
-                Your session expires in: {formatTime(timeLeft)}
-              </span>
+              <div 
+                className="flex items-center justify-center gap-3 py-4 px-6 rounded-2xl text-white shadow-lg"
+                style={{ background: 'linear-gradient(135deg, hsl(142 69% 45%) 0%, hsl(142 76% 26%) 100%)' }}
+              >
+                <motion.div
+                  animate={{ rotate: [0, -10, 10, 0] }}
+                  transition={{ repeat: Infinity, duration: 1, repeatDelay: 2 }}
+                >
+                  <Clock className="w-5 h-5 sm:w-6 sm:h-6" />
+                </motion.div>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                  <span className="text-xs sm:text-sm font-medium opacity-90">
+                    Your personalized plan expires in:
+                  </span>
+                  <motion.span 
+                    className="font-heading font-bold text-xl sm:text-2xl"
+                    animate={{ scale: timeLeft <= 60 ? [1, 1.1, 1] : 1 }}
+                    transition={{ repeat: timeLeft <= 60 ? Infinity : 0, duration: 0.5 }}
+                  >
+                    {formatTime(timeLeft)}
+                  </motion.span>
+                </div>
+              </div>
+              <p className="text-center text-xs text-muted-foreground mt-2">
+                ⚠️ After expiration, you'll need to retake the assessment
+              </p>
             </motion.div>
           </div>
         </section>
