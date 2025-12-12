@@ -1,45 +1,44 @@
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight, Quote } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { cn } from "@/lib/utils";
-
-const testimonials = [
-  {
-    name: "Mariana Costa",
-    role: "Perdeu 15kg em 4 meses",
-    content:
-      "O SlimVita mudou minha vida! Os treinos personalizados se encaixaram perfeitamente na minha rotina corrida. Em 4 meses, perdi 15kg e ganhei uma disposição que não tinha há anos.",
-    avatar: "MC",
-    rating: 5,
-  },
-  {
-    name: "Ricardo Santos",
-    role: "Melhorou condicionamento",
-    content:
-      "Depois de anos sedentário, achei que seria impossível voltar a treinar. O SlimVita começou comigo do zero e hoje corro 5km sem parar. A equipe de suporte é incrível!",
-    avatar: "RS",
-    rating: 5,
-  },
-  {
-    name: "Ana Paula Ferreira",
-    role: "Mantém saúde em dia",
-    content:
-      "Uso o SlimVita há 8 meses e minha qualidade de vida melhorou muito. A nutrição integrada com os treinos faz toda diferença. Recomendo para todos!",
-    avatar: "AF",
-    rating: 5,
-  },
-];
 
 const TestimonialsSection = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const { ref, isVisible } = useScrollAnimation();
+  const { t } = useLanguage();
+
+  const testimonials = [
+    {
+      name: "Sarah Mitchell",
+      role: "Lost 35 lbs in 4 months",
+      content: "SlimVita completely changed my life! The personalized workouts fit perfectly into my busy schedule as a working mom. In just 4 months, I lost 35 pounds and gained energy I haven't had in years. The support team is incredible!",
+      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
+      rating: 5,
+    },
+    {
+      name: "Michael Thompson",
+      role: "Improved fitness level",
+      content: "After years of being sedentary, I thought it would be impossible to get back in shape. SlimVita started with me from zero, and now I can run 5K without stopping. The expert guidance made all the difference in my journey.",
+      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
+      rating: 5,
+    },
+    {
+      name: "Jennifer Anderson",
+      role: "Maintaining healthy lifestyle",
+      content: "I've been using SlimVita for 8 months and my quality of life has improved tremendously. The integrated nutrition with workouts makes a huge difference. I recommend it to everyone looking for a sustainable health transformation!",
+      image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=face",
+      rating: 5,
+    },
+  ];
 
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % testimonials.length);
-    }, 5000);
+    }, 6000);
     return () => clearInterval(interval);
-  }, []);
+  }, [testimonials.length]);
 
   const goToPrev = () => {
     setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
@@ -54,14 +53,13 @@ const TestimonialsSection = () => {
       <div className="container mx-auto px-4">
         <div ref={ref} className={cn("text-center mb-16", isVisible && "animate-fade-in-up")}>
           <span className="inline-block text-primary-foreground/70 font-semibold text-sm uppercase tracking-wider mb-4">
-            Histórias de Sucesso
+            {t("testimonials.badge")}
           </span>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-primary-foreground mb-6">
-            O que Nossos Usuários Dizem
+            {t("testimonials.title")}
           </h2>
-          <p className="text-primary-foreground/80 text-lg max-w-2xl mx-auto">
-            Milhares de pessoas já transformaram suas vidas com o SlimVita. 
-            Confira alguns depoimentos reais.
+          <p className="text-primary-foreground/80 text-lg max-w-2xl mx-auto leading-relaxed">
+            {t("testimonials.subtitle")}
           </p>
         </div>
 
@@ -70,7 +68,7 @@ const TestimonialsSection = () => {
           <div className={cn("bg-primary-foreground/10 backdrop-blur-sm rounded-3xl p-8 md:p-12 border border-primary-foreground/20", isVisible && "animate-scale-in")}>
             <Quote className="w-12 h-12 text-primary-foreground/30 mb-6" />
             
-            <div className="min-h-[120px]">
+            <div className="min-h-[140px]">
               <p className="text-primary-foreground text-lg md:text-xl leading-relaxed mb-8">
                 "{testimonials[currentIndex].content}"
               </p>
@@ -78,9 +76,11 @@ const TestimonialsSection = () => {
 
             <div className="flex items-center justify-between flex-wrap gap-4">
               <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold text-lg">
-                  {testimonials[currentIndex].avatar}
-                </div>
+                <img 
+                  src={testimonials[currentIndex].image} 
+                  alt={testimonials[currentIndex].name}
+                  className="w-14 h-14 rounded-full object-cover border-2 border-primary-foreground/30"
+                />
                 <div>
                   <h4 className="font-heading font-bold text-primary-foreground text-lg">
                     {testimonials[currentIndex].name}
@@ -110,7 +110,7 @@ const TestimonialsSection = () => {
             <button
               onClick={goToPrev}
               className="w-12 h-12 rounded-full bg-primary-foreground/10 hover:bg-primary-foreground/20 flex items-center justify-center transition-colors"
-              aria-label="Depoimento anterior"
+              aria-label="Previous testimonial"
             >
               <ChevronLeft className="w-6 h-6 text-primary-foreground" />
             </button>
@@ -120,19 +120,19 @@ const TestimonialsSection = () => {
                   key={index}
                   onClick={() => setCurrentIndex(index)}
                   className={cn(
-                    "w-3 h-3 rounded-full transition-all duration-300",
+                    "h-2 rounded-full transition-all duration-300",
                     index === currentIndex
                       ? "bg-primary-foreground w-8"
-                      : "bg-primary-foreground/30 hover:bg-primary-foreground/50"
+                      : "bg-primary-foreground/30 hover:bg-primary-foreground/50 w-2"
                   )}
-                  aria-label={`Ir para depoimento ${index + 1}`}
+                  aria-label={`Go to testimonial ${index + 1}`}
                 />
               ))}
             </div>
             <button
               onClick={goToNext}
               className="w-12 h-12 rounded-full bg-primary-foreground/10 hover:bg-primary-foreground/20 flex items-center justify-center transition-colors"
-              aria-label="Próximo depoimento"
+              aria-label="Next testimonial"
             >
               <ChevronRight className="w-6 h-6 text-primary-foreground" />
             </button>
