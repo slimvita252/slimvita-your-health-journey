@@ -48,7 +48,7 @@ const QuestionnaireStep = ({
 
   return (
     <motion.div
-      className="relative min-h-[60vh] flex flex-col"
+      className="relative min-h-[50vh] sm:min-h-[60vh] flex flex-col"
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -20 }}
@@ -56,7 +56,7 @@ const QuestionnaireStep = ({
     >
       {/* Background Image */}
       {backgroundImage && (
-        <div className="absolute inset-0 -z-10 overflow-hidden rounded-3xl">
+        <div className="absolute inset-0 -z-10 overflow-hidden rounded-2xl sm:rounded-3xl">
           <img
             src={backgroundImage}
             alt=""
@@ -67,9 +67,9 @@ const QuestionnaireStep = ({
       )}
 
       {/* Header */}
-      <div className="text-center mb-8 md:mb-10">
+      <div className="text-center mb-6 sm:mb-8 md:mb-10 px-2">
         <motion.h2
-          className="text-2xl md:text-4xl font-heading font-bold text-foreground leading-tight"
+          className="text-xl sm:text-2xl md:text-4xl font-heading font-bold text-foreground leading-tight"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
@@ -78,7 +78,7 @@ const QuestionnaireStep = ({
         </motion.h2>
         {subtitle && (
           <motion.p
-            className="mt-3 text-muted-foreground text-base md:text-lg max-w-xl mx-auto"
+            className="mt-2 sm:mt-3 text-muted-foreground text-sm sm:text-base md:text-lg max-w-xl mx-auto"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
@@ -90,14 +90,14 @@ const QuestionnaireStep = ({
 
       {/* Options Grid */}
       {options && (
-        <div className={cn("grid gap-3 md:gap-4", gridCols[columns])}>
+        <div className={cn("grid gap-2 sm:gap-3 md:gap-4", gridCols[columns])}>
           {options.map((option, index) => (
             <motion.button
               key={option.value}
               onClick={() => onSelect?.(option.value)}
               className={cn(
-                "relative p-5 md:p-6 rounded-2xl border-2 text-left transition-all duration-200",
-                "hover:shadow-md hover:border-primary/50 hover:-translate-y-0.5",
+                "relative p-4 sm:p-5 md:p-6 rounded-xl sm:rounded-2xl border-2 text-left transition-all duration-200",
+                "hover:shadow-md hover:border-primary/50 active:scale-[0.98]",
                 "focus:outline-none focus:ring-2 focus:ring-primary/20",
                 isSelected(option.value)
                   ? "border-primary bg-primary/5 shadow-md"
@@ -105,7 +105,7 @@ const QuestionnaireStep = ({
               )}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.05 }}
+              transition={{ delay: index * 0.03 }}
               whileTap={{ scale: 0.98 }}
             >
               <div className="flex items-start gap-3">
@@ -115,19 +115,19 @@ const QuestionnaireStep = ({
                   </div>
                 )}
                 <div className="flex-1 min-w-0">
-                  <div className="font-heading font-semibold text-foreground text-base md:text-lg">
+                  <div className="font-heading font-semibold text-foreground text-sm sm:text-base md:text-lg">
                     {option.label}
                   </div>
                   {option.description && (
-                    <div className="text-sm text-muted-foreground mt-1 leading-relaxed">
+                    <div className="text-xs sm:text-sm text-muted-foreground mt-0.5 sm:mt-1 leading-relaxed">
                       {option.description}
                     </div>
                   )}
                 </div>
                 {isSelected(option.value) && (
                   <div className="flex-shrink-0">
-                    <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center">
-                      <Check className="w-4 h-4 text-primary-foreground" />
+                    <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-primary flex items-center justify-center">
+                      <Check className="w-3 h-3 sm:w-4 sm:h-4 text-primary-foreground" />
                     </div>
                   </div>
                 )}
