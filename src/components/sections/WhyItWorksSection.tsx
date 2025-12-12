@@ -1,6 +1,7 @@
-import { Brain, Target, Users, TrendingUp, CheckCircle } from "lucide-react";
+import { Brain, Target, Users, TrendingUp, CheckCircle, Footprints, Award, Shield } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
 
 const WhyItWorksSection = () => {
   const { ref, isVisible } = useScrollAnimation();
@@ -8,99 +9,124 @@ const WhyItWorksSection = () => {
   const reasons = [
     {
       icon: Brain,
-      title: "Science-Based Approach",
-      description: "Our programs are developed by certified nutritionists and fitness experts using peer-reviewed research.",
+      title: "Science-Based Walking Programs",
+      description: "Developed by certified fitness experts using peer-reviewed research on walking for weight loss.",
     },
     {
       icon: Target,
-      title: "Personalized For You",
-      description: "No generic plans. Every workout and meal is tailored to your body, goals, and lifestyle.",
+      title: "100% Personalized For You",
+      description: "No generic plans. Every step goal and routine is tailored to your body, goals, and lifestyle.",
     },
     {
       icon: Users,
-      title: "Expert Support Team",
-      description: "Real coaches available 24/7 to answer questions, adjust your plan, and keep you motivated.",
+      title: "24/7 Expert Support Team",
+      description: "Real coaches available around the clock to answer questions and keep you on track.",
     },
     {
       icon: TrendingUp,
-      title: "Proven Results",
-      description: "94% of our users report measurable improvements within the first 30 days.",
+      title: "Proven, Measurable Results",
+      description: "94% of our users report visible improvements within the first 30 days of following their plan.",
     },
   ];
 
   const stats = [
-    { value: "94%", label: "Report visible results in 30 days" },
-    { value: "15lbs", label: "Average weight loss in 12 weeks" },
-    { value: "89%", label: "Feel more energized daily" },
+    { value: "94%", label: "See results in 30 days" },
+    { value: "15 lbs", label: "Avg weight loss (12 wks)" },
+    { value: "89%", label: "More energy daily" },
   ];
 
   return (
-    <section className="py-24 bg-gradient-to-b from-gray-50 to-white">
-      <div ref={ref} className="container mx-auto px-6">
+    <section className="py-24 bg-gradient-to-b from-accent/30 to-white relative overflow-hidden">
+      {/* Background Elements */}
+      <div className="absolute top-1/2 left-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl -translate-y-1/2" />
+      <div className="absolute top-1/3 right-0 w-72 h-72 bg-secondary/5 rounded-full blur-3xl" />
+
+      <div ref={ref} className="container mx-auto px-6 relative z-10">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Left - Image with Stats */}
-          <div className={cn(
-            "relative transition-all duration-700",
-            isVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-8"
-          )}>
+          <motion.div
+            initial={{ opacity: 0, x: -40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="relative"
+          >
             <div className="relative">
-              <img 
+              <img
                 src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&q=80"
-                alt="Woman achieving fitness goals"
-                className="rounded-3xl shadow-2xl w-full h-[500px] object-cover"
+                alt="Happy woman walking outdoors achieving fitness goals"
+                className="rounded-3xl shadow-2xl w-full h-[550px] object-cover"
               />
-              <div className="absolute -bottom-8 -right-8 bg-white rounded-2xl shadow-xl p-6 max-w-xs">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
-                    <CheckCircle className="w-5 h-5 text-green-600" />
+              {/* Overlay Card */}
+              <div className="absolute -bottom-8 -right-8 bg-card rounded-2xl shadow-xl p-6 max-w-xs border border-border/50">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                    <CheckCircle className="w-6 h-6 text-primary" />
                   </div>
-                  <span className="font-semibold text-gray-900">Real Results</span>
+                  <div>
+                    <span className="font-semibold text-foreground">Real Results</span>
+                    <p className="text-xs text-muted-foreground">Verified by Users</p>
+                  </div>
                 </div>
                 <div className="grid grid-cols-3 gap-4">
                   {stats.map((stat, i) => (
                     <div key={i} className="text-center">
-                      <p className="text-2xl font-bold text-primary">{stat.value}</p>
-                      <p className="text-xs text-gray-500 mt-1">{stat.label}</p>
+                      <p className="text-xl font-bold text-primary">{stat.value}</p>
+                      <p className="text-[10px] text-muted-foreground mt-1 leading-tight">{stat.label}</p>
                     </div>
                   ))}
                 </div>
               </div>
+
+              {/* Floating Badge */}
+              <div className="absolute -top-4 -left-4 bg-primary text-primary-foreground rounded-2xl p-4 shadow-lg">
+                <div className="flex items-center gap-2">
+                  <Award className="w-5 h-5" />
+                  <span className="font-semibold text-sm">#1 Walking App</span>
+                </div>
+              </div>
             </div>
-          </div>
+          </motion.div>
 
           {/* Right - Content */}
-          <div className={cn(
-            "transition-all duration-700",
-            isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-8"
-          )}>
-            <span className="inline-block text-primary font-semibold text-sm uppercase tracking-wider mb-4">
+          <motion.div
+            initial={{ opacity: 0, x: 40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <span className="inline-block text-primary font-semibold text-sm uppercase tracking-wider mb-4 bg-primary/10 px-4 py-1.5 rounded-full">
               Why SlimVita Works
             </span>
-            <h2 className="text-4xl md:text-5xl font-heading font-bold text-gray-900 mb-6">
+            <h2 className="text-4xl md:text-5xl font-heading font-bold text-foreground mb-6">
               The Science Behind
               <span className="text-primary block">Your Transformation</span>
             </h2>
-            <p className="text-lg text-gray-600 mb-10">
-              Unlike generic fitness apps, SlimVita combines behavioral science, personalized nutrition, and adaptive workouts to create lasting change—not quick fixes.
+            <p className="text-lg text-muted-foreground mb-10 leading-relaxed">
+              Unlike generic fitness apps, SlimVita combines behavioral science, personalized walking programs, and adaptive goals to create lasting change—not quick fixes.
             </p>
 
-            <div className="space-y-6">
+            <div className="space-y-4">
               {reasons.map((reason, index) => (
-                <div 
+                <motion.div
                   key={index}
-                  className="flex gap-4 p-4 rounded-xl bg-white shadow-sm hover:shadow-md transition-all duration-300"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                  className="flex gap-4 p-4 rounded-xl bg-card shadow-sm hover:shadow-md transition-all duration-300 border border-border/50"
                 >
                   <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
                     <reason.icon className="w-6 h-6 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-1">{reason.title}</h3>
-                    <p className="text-gray-600 text-sm">{reason.description}</p>
+                    <h3 className="font-semibold text-foreground mb-1">{reason.title}</h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">{reason.description}</p>
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>
