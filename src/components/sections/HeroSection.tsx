@@ -16,7 +16,7 @@ const HeroSection = () => {
           alt="People exercising outdoors in a natural environment"
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-primary-dark/85 via-primary-dark/75 to-primary/65" />
+        <div className="absolute inset-0 bg-gradient-to-b from-primary-dark via-primary-dark/95 to-primary/90" />
       </div>
 
       {/* Animated Background Elements */}
