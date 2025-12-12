@@ -96,8 +96,16 @@ const Questionario = () => {
   };
 
   const handleResultsComplete = () => {
-    // After results, go to plans
+    // Store form data and results for plans page
     sessionStorage.setItem("slimvita-questionnaire-completed", "true");
+    sessionStorage.setItem("slimvita-user-data", JSON.stringify({
+      currentWeight: formData.currentWeight,
+      targetWeight: formData.targetWeight,
+      energyLevel: formData.energyLevel,
+      goal: formData.goal,
+      gender: formData.gender,
+      healthResults: healthResults,
+    }));
     navigate("/planos");
   };
 

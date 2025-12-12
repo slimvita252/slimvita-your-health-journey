@@ -1,195 +1,415 @@
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { Check, Star, Zap, Shield, Clock, Award, ArrowRight } from "lucide-react";
+import { Check, Star, Clock, Shield, ChevronRight, Zap, TrendingDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import HowItWorksSection from "@/components/sections/HowItWorksSection";
-import WhyItWorksSection from "@/components/sections/WhyItWorksSection";
-import BenefitsSection from "@/components/sections/BenefitsSection";
-import TestimonialsSection from "@/components/sections/TestimonialsSection";
+
+interface UserData {
+  currentWeight: number;
+  targetWeight: number;
+  energyLevel: string;
+  goal: string;
+  gender: string;
+  healthResults?: {
+    bmi: number;
+    bmiCategory: string;
+    bmr: number;
+    tdee: number;
+    targetCalories: number;
+  };
+}
 
 const plans = [
   {
-    name: "Starter",
-    price: 19,
-    period: "month",
-    description: "Perfect for beginning your walking journey.",
-    features: [
-      "Weekly personalized walking plan",
-      "Basic progress tracking",
-      "Access to SlimVita app",
-      "Exercise library",
-      "Community support",
-    ],
+    id: "weekly",
+    name: "Weekly Plan",
+    price: 4.99,
+    dailyCost: 0.71,
+    period: "week",
     highlighted: false,
-    cta: "Get Started",
   },
   {
-    name: "Pro",
-    price: 39,
+    id: "monthly",
+    name: "1-Month Plan",
+    price: 17.99,
+    dailyCost: 0.59,
     period: "month",
-    description: "Our most popular plan for consistent results.",
-    features: [
-      "Daily personalized walking plan",
-      "Nutrition guidance included",
-      "Expert coaching support",
-      "Full analytics dashboard",
-      "Advanced progress reports",
-      "Weekly challenges",
-      "Priority support",
-    ],
+    highlighted: false,
+  },
+  {
+    id: "quarterly",
+    name: "3-Month Plan",
+    price: 34.99,
+    dailyCost: 0.38,
+    period: "3 months",
     highlighted: true,
-    cta: "Start Pro Plan",
-    badge: "Most Popular",
+    badge: "MOST POPULAR",
+  },
+];
+
+const testimonials = [
+  {
+    id: 1,
+    name: "Sarah Mitchell",
+    rating: 5.0,
+    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
+    text: "Lost 23 lbs in 8 weeks! The personalized walking plan fit perfectly into my busy schedule.",
   },
   {
-    name: "Premium",
-    price: 59,
-    period: "month",
-    description: "Complete experience with exclusive support.",
-    features: [
-      "Everything in Pro",
-      "1-on-1 coaching sessions",
-      "Monthly live check-ins",
-      "Detailed meal planning",
-      "Weekly plan adjustments",
-      "Early access to features",
-      "24/7 dedicated support",
-    ],
-    highlighted: false,
-    cta: "Go Premium",
+    id: 2,
+    name: "Jennifer Adams",
+    rating: 4.5,
+    image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face",
+    text: "Finally found something that works! Down 18 lbs and feeling more energetic than ever.",
+  },
+  {
+    id: 3,
+    name: "Michelle Roberts",
+    rating: 5.0,
+    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=face",
+    text: "The daily calorie targets were spot on. Lost 15 lbs without feeling hungry or deprived.",
   },
 ];
 
 const Planos = () => {
+  const [timeLeft, setTimeLeft] = useState(9 * 60); // 9 minutes in seconds
+  const [isTimerFixed, setIsTimerFixed] = useState(false);
+  const plansRef = useRef<HTMLDivElement>(null);
+  const [userData, setUserData] = useState<UserData>({
+    currentWeight: 85,
+    targetWeight: 70,
+    energyLevel: "low",
+    goal: "lose-weight",
+    gender: "female",
+  });
+
+  // Load user data from session storage
+  useEffect(() => {
+    const storedData = sessionStorage.getItem("slimvita-user-data");
+    if (storedData) {
+      try {
+        const parsed = JSON.parse(storedData);
+        setUserData(parsed);
+      } catch (e) {
+        console.error("Failed to parse user data");
+      }
+    }
+  }, []);
+
+  // Timer countdown
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  // Handle scroll for fixed timer
+  useEffect(() => {
+    const handleScroll = () => {
+      if (plansRef.current) {
+        const rect = plansRef.current.getBoundingClientRect();
+        setIsTimerFixed(rect.top <= 80);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+  };
+
+  const weightToLose = userData.currentWeight - userData.targetWeight;
+  const energyLabels: Record<string, string> = {
+    low: "Low",
+    variable: "Variable",
+    moderate: "Moderate",
+    high: "High",
+  };
+
+  // Generate weight loss projection data
+  const generateWeightProjection = () => {
+    const weeks = 12;
+    const weeklyLoss = weightToLose / weeks;
+    const data = [];
+    for (let i = 0; i <= weeks; i++) {
+      data.push({
+        week: i,
+        weight: Math.round((userData.currentWeight - weeklyLoss * i) * 10) / 10,
+      });
+    }
+    return data;
+  };
+
+  const projectionData = generateWeightProjection();
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
 
-      <main className="flex-1">
-        {/* Hero Section for Plans */}
-        <section className="pt-24 sm:pt-28 md:pt-32 pb-16 sm:pb-20 md:pb-24 bg-gradient-to-b from-accent/50 to-background">
-          <div className="container mx-auto px-4 sm:px-6">
-            {/* Header */}
+      {/* Fixed Timer */}
+      <motion.div
+        initial={{ y: -100 }}
+        animate={{ y: isTimerFixed ? 0 : -100 }}
+        className="fixed top-0 left-0 right-0 z-50 bg-destructive text-destructive-foreground py-3 text-center shadow-lg"
+      >
+        <div className="flex items-center justify-center gap-2">
+          <Clock className="w-4 h-4" />
+          <span className="font-semibold">
+            Your session expires in: {formatTime(timeLeft)}
+          </span>
+        </div>
+      </motion.div>
+
+      <main className="flex-1 pt-20 sm:pt-24">
+        {/* Personalized Summary Section */}
+        <section className="py-8 sm:py-12 bg-gradient-to-b from-accent/50 to-background">
+          <div className="container mx-auto px-4">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-center mb-10 sm:mb-12 md:mb-16"
+              className="text-center mb-8"
             >
-              <span className="inline-block text-primary font-semibold text-xs sm:text-sm uppercase tracking-wider mb-3 sm:mb-4 bg-primary/10 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full">
-                Your Personal Plan is Ready
-              </span>
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-foreground mb-4 sm:mb-6 px-2">
-                Choose Your
-                <span className="text-primary"> Transformation</span>
+              <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-4">
+                <Zap className="w-4 h-4" />
+                Your personalized plan is ready
+              </div>
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-heading font-bold text-foreground mb-2">
+                Your Transformation Journey
               </h1>
-              <p className="text-muted-foreground text-base sm:text-lg md:text-xl max-w-2xl mx-auto px-4">
-                Based on your assessment, we've prepared personalized walking plans. 
-                All plans include a 30-day money-back guarantee.
+              <p className="text-muted-foreground">
+                Based on your assessment, here's your personalized path to success
+              </p>
+            </motion.div>
+
+            {/* Before/After Cards */}
+            <div className="grid grid-cols-2 gap-4 max-w-lg mx-auto mb-8">
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.1 }}
+                className="bg-card rounded-2xl p-4 sm:p-6 border border-border shadow-sm text-center"
+              >
+                <span className="text-xs sm:text-sm text-muted-foreground uppercase tracking-wider">Current</span>
+                <div className="text-3xl sm:text-4xl font-heading font-bold text-foreground mt-2">
+                  {userData.currentWeight}
+                  <span className="text-lg text-muted-foreground ml-1">kg</span>
+                </div>
+                <div className="mt-2 text-xs sm:text-sm text-muted-foreground">
+                  Energy: {energyLabels[userData.energyLevel] || "Variable"}
+                </div>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2 }}
+                className="bg-primary rounded-2xl p-4 sm:p-6 text-primary-foreground shadow-lg text-center"
+              >
+                <span className="text-xs sm:text-sm opacity-80 uppercase tracking-wider">Goal</span>
+                <div className="text-3xl sm:text-4xl font-heading font-bold mt-2">
+                  {userData.targetWeight}
+                  <span className="text-lg opacity-80 ml-1">kg</span>
+                </div>
+                <div className="mt-2 text-xs sm:text-sm opacity-80">
+                  Energy: High
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Objective Badge */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.3 }}
+              className="flex justify-center mb-8"
+            >
+              <div className="inline-flex items-center gap-2 bg-secondary/50 text-secondary-foreground px-4 sm:px-6 py-3 rounded-full">
+                <TrendingDown className="w-4 h-4 sm:w-5 sm:h-5" />
+                <span className="font-semibold text-sm sm:text-base">
+                  Your objective: lose {weightToLose} kg
+                </span>
+              </div>
+            </motion.div>
+
+            {/* Weight Timeline Graph */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="bg-card rounded-2xl p-4 sm:p-6 border border-border shadow-sm max-w-2xl mx-auto mb-8"
+            >
+              <h3 className="text-lg font-heading font-semibold text-foreground mb-4 text-center">
+                Expected Weight Loss Journey
+              </h3>
+              <div className="relative h-48 sm:h-56">
+                {/* Y-axis labels */}
+                <div className="absolute left-0 top-0 bottom-8 w-12 flex flex-col justify-between text-xs text-muted-foreground">
+                  <span>{userData.currentWeight} kg</span>
+                  <span>{Math.round((userData.currentWeight + userData.targetWeight) / 2)} kg</span>
+                  <span>{userData.targetWeight} kg</span>
+                </div>
+                
+                {/* Graph area */}
+                <div className="ml-14 h-40 sm:h-48 relative">
+                  <svg className="w-full h-full" viewBox="0 0 400 150" preserveAspectRatio="none">
+                    {/* Grid lines */}
+                    <line x1="0" y1="0" x2="400" y2="0" stroke="currentColor" strokeOpacity="0.1" />
+                    <line x1="0" y1="75" x2="400" y2="75" stroke="currentColor" strokeOpacity="0.1" />
+                    <line x1="0" y1="150" x2="400" y2="150" stroke="currentColor" strokeOpacity="0.1" />
+                    
+                    {/* Weight curve */}
+                    <defs>
+                      <linearGradient id="weightGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.3" />
+                        <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0" />
+                      </linearGradient>
+                    </defs>
+                    <path
+                      d={`M 0,5 ${projectionData.map((d, i) => {
+                        const x = (i / (projectionData.length - 1)) * 400;
+                        const y = 5 + ((d.weight - userData.targetWeight) / weightToLose) * 140;
+                        return `L ${x},${y}`;
+                      }).join(' ')} L 400,150 L 0,150 Z`}
+                      fill="url(#weightGradient)"
+                    />
+                    <path
+                      d={`M 0,5 ${projectionData.map((d, i) => {
+                        const x = (i / (projectionData.length - 1)) * 400;
+                        const y = 5 + ((d.weight - userData.targetWeight) / weightToLose) * 140;
+                        return `L ${x},${y}`;
+                      }).join(' ')}`}
+                      fill="none"
+                      stroke="hsl(var(--primary))"
+                      strokeWidth="3"
+                      strokeLinecap="round"
+                    />
+                    
+                    {/* Start point */}
+                    <circle cx="0" cy="5" r="6" fill="hsl(var(--primary))" />
+                    
+                    {/* End point */}
+                    <circle cx="400" cy="145" r="6" fill="hsl(var(--primary))" />
+                  </svg>
+                </div>
+                
+                {/* X-axis labels */}
+                <div className="ml-14 flex justify-between text-xs text-muted-foreground mt-2">
+                  <span>Now</span>
+                  <span>Week 4</span>
+                  <span>Week 8</span>
+                  <span>Week 12</span>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Timer Warning */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 }}
+              className="flex items-center justify-center gap-2 text-destructive mb-8"
+            >
+              <Clock className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="text-sm sm:text-base font-medium">
+                Your session expires in: {formatTime(timeLeft)}
+              </span>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Plans Section */}
+        <section ref={plansRef} className="py-8 sm:py-12 bg-background">
+          <div className="container mx-auto px-4">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center mb-8"
+            >
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-heading font-bold text-foreground mb-2">
+                Choose Your Plan
+              </h2>
+              <p className="text-muted-foreground text-sm sm:text-base">
+                All plans include a 30-day money-back guarantee
               </p>
             </motion.div>
 
             {/* Plans Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6 lg:gap-8 max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-4xl mx-auto">
               {plans.map((plan, index) => (
                 <motion.div
-                  key={plan.name}
+                  key={plan.id}
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
+                  transition={{ delay: 0.1 * index }}
                   className={cn(
-                    "relative rounded-2xl sm:rounded-3xl p-6 sm:p-8 transition-all duration-500",
+                    "relative rounded-2xl p-5 sm:p-6 transition-all duration-300",
                     plan.highlighted
-                      ? "bg-gradient-to-br from-primary to-primary-dark text-primary-foreground shadow-2xl shadow-primary/30 md:scale-105 z-10 order-first md:order-none"
-                      : "bg-card border-2 border-border hover:border-primary/30 hover:shadow-xl"
+                      ? "bg-primary text-primary-foreground shadow-xl shadow-primary/20 scale-[1.02] sm:scale-105"
+                      : "bg-card border-2 border-border hover:border-primary/30"
                   )}
                 >
                   {/* Badge */}
                   {plan.badge && (
-                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-secondary text-secondary-foreground px-4 py-1.5 rounded-full text-sm font-semibold flex items-center gap-1.5 shadow-lg">
-                      <Star className="w-4 h-4 fill-current" />
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-secondary text-secondary-foreground px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-md">
+                      <Star className="w-3 h-3 fill-current" />
                       {plan.badge}
                     </div>
                   )}
 
-                  {/* Plan Header */}
-                  <div className="text-center mb-8">
+                  <div className="text-center">
                     <h3 className={cn(
-                      "text-2xl font-heading font-bold mb-2",
+                      "text-lg font-heading font-bold mb-3",
                       plan.highlighted ? "text-primary-foreground" : "text-foreground"
                     )}>
                       {plan.name}
                     </h3>
-                    <p className={cn(
-                      "text-sm mb-6",
-                      plan.highlighted ? "text-primary-foreground/80" : "text-muted-foreground"
-                    )}>
-                      {plan.description}
-                    </p>
-                    <div className="flex items-baseline justify-center gap-1">
+
+                    <div className="mb-4">
                       <span className={cn(
-                        "text-lg",
-                        plan.highlighted ? "text-primary-foreground/70" : "text-muted-foreground"
-                      )}>
-                        $
-                      </span>
-                      <span className={cn(
-                        "text-5xl font-heading font-bold",
+                        "text-3xl sm:text-4xl font-heading font-bold",
                         plan.highlighted ? "text-primary-foreground" : "text-foreground"
                       )}>
-                        {plan.price}
+                        ${plan.price}
                       </span>
                       <span className={cn(
-                        "text-lg",
+                        "text-sm ml-1",
                         plan.highlighted ? "text-primary-foreground/70" : "text-muted-foreground"
                       )}>
                         /{plan.period}
                       </span>
                     </div>
+
+                    <div className={cn(
+                      "text-sm mb-5 py-2 px-3 rounded-lg",
+                      plan.highlighted 
+                        ? "bg-primary-foreground/20 text-primary-foreground" 
+                        : "bg-accent text-muted-foreground"
+                    )}>
+                      ${plan.dailyCost}/day
+                    </div>
+
+                    <Button
+                      asChild
+                      className={cn(
+                        "w-full py-5 text-sm font-semibold rounded-xl",
+                        plan.highlighted
+                          ? "bg-white text-primary-dark hover:bg-white/90"
+                          : "bg-primary text-primary-foreground hover:bg-primary-dark"
+                      )}
+                    >
+                      <Link to="/confirmacao">
+                        Get Plan
+                        <ChevronRight className="w-4 h-4 ml-1" />
+                      </Link>
+                    </Button>
                   </div>
-
-                  {/* Features */}
-                  <ul className="space-y-4 mb-8">
-                    {plan.features.map((feature) => (
-                      <li key={feature} className="flex items-start gap-3">
-                        <div className={cn(
-                          "w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5",
-                          plan.highlighted ? "bg-primary-foreground/20" : "bg-primary/10"
-                        )}>
-                          <Check className={cn(
-                            "w-3 h-3",
-                            plan.highlighted ? "text-primary-foreground" : "text-primary"
-                          )} />
-                        </div>
-                        <span className={cn(
-                          "text-sm",
-                          plan.highlighted ? "text-primary-foreground/90" : "text-foreground"
-                        )}>
-                          {feature}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  {/* CTA */}
-                  <Button
-                    asChild
-                    className={cn(
-                      "w-full py-6 text-base font-semibold rounded-xl",
-                      plan.highlighted
-                        ? "bg-white text-primary-dark hover:bg-white/90"
-                        : "bg-primary text-primary-foreground hover:bg-primary-dark"
-                    )}
-                    size="lg"
-                  >
-                    <Link to="/confirmacao">
-                      {plan.highlighted && <Zap className="w-4 h-4 mr-2" />}
-                      {plan.cta}
-                      <ArrowRight className="w-4 h-4 ml-2" />
-                    </Link>
-                  </Button>
                 </motion.div>
               ))}
             </div>
@@ -199,29 +419,102 @@ const Planos = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="mt-10 sm:mt-12 md:mt-16 flex flex-col sm:flex-row flex-wrap items-center justify-center gap-4 sm:gap-6 md:gap-8"
+              className="mt-8 flex flex-wrap items-center justify-center gap-4 sm:gap-6"
             >
               <div className="flex items-center gap-2 text-muted-foreground">
-                <Shield className="w-5 h-5 text-primary flex-shrink-0" />
-                <span className="text-sm font-medium">30-Day Money-Back</span>
+                <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+                <span className="text-xs sm:text-sm font-medium">30-Day Money-Back</span>
               </div>
               <div className="flex items-center gap-2 text-muted-foreground">
-                <Clock className="w-5 h-5 text-primary flex-shrink-0" />
-                <span className="text-sm font-medium">Cancel Anytime</span>
+                <Check className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+                <span className="text-xs sm:text-sm font-medium">Cancel Anytime</span>
               </div>
               <div className="flex items-center gap-2 text-muted-foreground">
-                <Award className="w-5 h-5 text-primary flex-shrink-0" />
-                <span className="text-sm font-medium">150,000+ Users</span>
+                <Star className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+                <span className="text-xs sm:text-sm font-medium">150,000+ Users</span>
               </div>
             </motion.div>
           </div>
         </section>
 
-        {/* Rest of the site content */}
-        <HowItWorksSection />
-        <WhyItWorksSection />
-        <BenefitsSection />
-        <TestimonialsSection />
+        {/* Testimonials Section */}
+        <section className="py-8 sm:py-12 bg-accent/30">
+          <div className="container mx-auto px-4">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center mb-8"
+            >
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-heading font-bold text-foreground mb-2">
+                Real Results from Real People
+              </h2>
+              <p className="text-muted-foreground text-sm sm:text-base">
+                Join thousands who've transformed their lives
+              </p>
+            </motion.div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-4xl mx-auto">
+              {testimonials.map((testimonial, index) => (
+                <motion.div
+                  key={testimonial.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 * index }}
+                  className="bg-card rounded-2xl p-5 sm:p-6 border border-border shadow-sm"
+                >
+                  <div className="flex items-center gap-3 mb-4">
+                    <img
+                      src={testimonial.image}
+                      alt={testimonial.name}
+                      className="w-12 h-12 rounded-full object-cover"
+                    />
+                    <div>
+                      <h4 className="font-semibold text-foreground text-sm">
+                        {testimonial.name}
+                      </h4>
+                      <div className="flex items-center gap-1">
+                        <Star className="w-3 h-3 fill-secondary text-secondary" />
+                        <span className="text-xs text-muted-foreground">
+                          {testimonial.rating.toFixed(1)}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    "{testimonial.text}"
+                  </p>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Final CTA */}
+        <section className="py-8 sm:py-12 bg-primary">
+          <div className="container mx-auto px-4 text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+            >
+              <h2 className="text-xl sm:text-2xl font-heading font-bold text-primary-foreground mb-3">
+                Start Your Transformation Today
+              </h2>
+              <p className="text-primary-foreground/80 text-sm sm:text-base mb-6 max-w-md mx-auto">
+                Don't wait — your personalized plan expires in {formatTime(timeLeft)}
+              </p>
+              <Button
+                asChild
+                size="lg"
+                className="bg-white text-primary-dark hover:bg-white/90 px-8 py-6 text-base font-semibold rounded-xl"
+              >
+                <Link to="/confirmacao">
+                  Get Started Now
+                  <ChevronRight className="w-5 h-5 ml-2" />
+                </Link>
+              </Button>
+            </motion.div>
+          </div>
+        </section>
       </main>
 
       <Footer />
