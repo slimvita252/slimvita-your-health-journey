@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
-import { Check, Star, Clock, Shield, ChevronRight, Zap, TrendingDown } from "lucide-react";
+import { Check, Star, Clock, Shield, ChevronRight, Zap, TrendingDown, Users, Award, Sparkles, Activity, Scale, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import CheckoutLoadingScreen from "@/components/CheckoutLoadingScreen";
 
 interface UserData {
   currentWeight: number;
@@ -30,6 +30,7 @@ const plans = [
     dailyCost: 4.99,
     period: "day",
     highlighted: false,
+    checkoutUrl: "https://slimvita.mycartpanda.com/checkout/204621682:1",
   },
   {
     id: "monthly",
@@ -38,6 +39,7 @@ const plans = [
     dailyCost: 0.59,
     period: "month",
     highlighted: false,
+    checkoutUrl: "https://slimvita.mycartpanda.com/checkout/204737670:1",
   },
   {
     id: "quarterly",
@@ -47,36 +49,76 @@ const plans = [
     period: "3 months",
     highlighted: true,
     badge: "MOST POPULAR",
+    checkoutUrl: "https://slimvita.mycartpanda.com/checkout/204737671:1",
   },
 ];
 
-const testimonials = [
-  {
-    id: 1,
-    name: "Sarah Mitchell",
-    rating: 5.0,
-    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
-    text: "Lost 23 lbs in 8 weeks! The personalized walking plan fit perfectly into my busy schedule.",
-  },
-  {
-    id: 2,
-    name: "Jennifer Adams",
-    rating: 4.5,
-    image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face",
-    text: "Finally found something that works! Down 18 lbs and feeling more energetic than ever.",
-  },
-  {
-    id: 3,
-    name: "Michelle Roberts",
-    rating: 5.0,
-    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=face",
-    text: "The daily calorie targets were spot on. Lost 15 lbs without feeling hungry or deprived.",
-  },
-];
+// Dynamic testimonials based on weight loss goals
+const getTestimonials = (weightToLose: number, gender: string) => {
+  const baseTestimonials = [
+    {
+      id: 1,
+      name: "Sarah Mitchell",
+      rating: 5.0,
+      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
+      text: `Lost ${Math.min(23, Math.round(weightToLose * 1.5))} lbs in 8 weeks! The personalized walking plan fit perfectly into my busy schedule.`,
+      achievement: "Reached goal weight",
+    },
+    {
+      id: 2,
+      name: "Jennifer Adams",
+      rating: 4.8,
+      image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face",
+      text: `Finally found something that works! Down ${Math.min(18, Math.round(weightToLose * 1.2))} lbs and feeling more energetic than ever.`,
+      achievement: "Energy boost",
+    },
+    {
+      id: 3,
+      name: "Michelle Roberts",
+      rating: 5.0,
+      image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=face",
+      text: `The daily calorie targets were spot on. Lost ${Math.min(15, Math.round(weightToLose))} lbs without feeling hungry or deprived.`,
+      achievement: "Sustainable results",
+    },
+  ];
+
+  if (gender === "male") {
+    return [
+      {
+        id: 1,
+        name: "Michael Johnson",
+        rating: 5.0,
+        image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
+        text: `Lost ${Math.min(28, Math.round(weightToLose * 1.8))} lbs in 10 weeks! The walking routine was easy to follow and effective.`,
+        achievement: "Reached goal weight",
+      },
+      {
+        id: 2,
+        name: "David Williams",
+        rating: 4.9,
+        image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face",
+        text: `Amazing results! Down ${Math.min(22, Math.round(weightToLose * 1.4))} lbs and my energy levels have never been better.`,
+        achievement: "Energy boost",
+      },
+      {
+        id: 3,
+        name: "James Anderson",
+        rating: 5.0,
+        image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
+        text: `The personalized plan made all the difference. Lost ${Math.min(20, Math.round(weightToLose * 1.3))} lbs sustainably.`,
+        achievement: "Sustainable results",
+      },
+    ];
+  }
+
+  return baseTestimonials;
+};
 
 const Planos = () => {
-  const [timeLeft, setTimeLeft] = useState(9 * 60); // 9 minutes in seconds
+  const [timeLeft, setTimeLeft] = useState(9 * 60);
   const [isTimerFixed, setIsTimerFixed] = useState(false);
+  const [showCheckout, setShowCheckout] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<typeof plans[0] | null>(null);
   const plansRef = useRef<HTMLDivElement>(null);
   const [userData, setUserData] = useState<UserData>({
     currentWeight: 85,
@@ -86,7 +128,6 @@ const Planos = () => {
     gender: "female",
   });
 
-  // Load user data from session storage
   useEffect(() => {
     const storedData = sessionStorage.getItem("slimvita-user-data");
     if (storedData) {
@@ -99,7 +140,6 @@ const Planos = () => {
     }
   }, []);
 
-  // Timer countdown
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
@@ -107,7 +147,6 @@ const Planos = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Handle scroll for fixed timer
   useEffect(() => {
     const handleScroll = () => {
       if (plansRef.current) {
@@ -125,7 +164,17 @@ const Planos = () => {
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 
+  const handleSelectPlan = (plan: typeof plans[0]) => {
+    setSelectedPlan(plan);
+    setShowCheckout(true);
+  };
+
   const weightToLose = userData.currentWeight - userData.targetWeight;
+  const bmi = userData.healthResults?.bmi || (userData.currentWeight / Math.pow(1.65, 2));
+  const bmiCategory = userData.healthResults?.bmiCategory || (bmi >= 30 ? "obese" : bmi >= 25 ? "overweight" : "normal");
+  const estimatedWeeks = Math.max(4, Math.round(weightToLose * 2));
+  const bodyFatReduction = Math.round(weightToLose * 0.8);
+
   const energyLabels: Record<string, string> = {
     low: "Low",
     variable: "Variable",
@@ -133,7 +182,8 @@ const Planos = () => {
     high: "High",
   };
 
-  // Generate weight loss projection data
+  const testimonials = getTestimonials(weightToLose, userData.gender);
+
   const generateWeightProjection = () => {
     const weeks = 12;
     const weeklyLoss = weightToLose / weeks;
@@ -148,6 +198,17 @@ const Planos = () => {
   };
 
   const projectionData = generateWeightProjection();
+
+  // Show checkout loading screen
+  if (showCheckout && selectedPlan) {
+    return (
+      <CheckoutLoadingScreen
+        userData={userData}
+        planName={selectedPlan.name}
+        checkoutUrl={selectedPlan.checkoutUrl}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -181,7 +242,7 @@ const Planos = () => {
       </motion.div>
 
       <main className="flex-1 pt-20 sm:pt-24">
-        {/* Personalized Summary Section */}
+        {/* Personalized Analysis Section */}
         <section className="py-8 sm:py-12 bg-gradient-to-b from-accent/50 to-background">
           <div className="container mx-auto px-4">
             <motion.div
@@ -200,6 +261,65 @@ const Planos = () => {
                 Based on your assessment, here's your personalized path to success
               </p>
             </motion.div>
+
+            {/* Health Metrics Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 max-w-3xl mx-auto mb-8">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="bg-card rounded-2xl p-4 border border-border shadow-sm text-center"
+              >
+                <Scale className="w-5 h-5 text-primary mx-auto mb-2" />
+                <p className="text-xs text-muted-foreground mb-1">Current BMI</p>
+                <p className={`text-xl font-heading font-bold ${bmi >= 30 ? "text-red-500" : bmi >= 25 ? "text-orange-500" : "text-green-500"}`}>
+                  {bmi.toFixed(1)}
+                </p>
+                <p className="text-xs text-muted-foreground capitalize">{bmiCategory}</p>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="bg-card rounded-2xl p-4 border border-border shadow-sm text-center"
+              >
+                <Target className="w-5 h-5 text-primary mx-auto mb-2" />
+                <p className="text-xs text-muted-foreground mb-1">Weight Goal</p>
+                <p className="text-xl font-heading font-bold text-foreground">
+                  -{weightToLose.toFixed(0)}kg
+                </p>
+                <p className="text-xs text-muted-foreground">to reach {userData.targetWeight}kg</p>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="bg-card rounded-2xl p-4 border border-border shadow-sm text-center"
+              >
+                <Clock className="w-5 h-5 text-primary mx-auto mb-2" />
+                <p className="text-xs text-muted-foreground mb-1">Estimated Time</p>
+                <p className="text-xl font-heading font-bold text-foreground">
+                  {estimatedWeeks}
+                </p>
+                <p className="text-xs text-muted-foreground">weeks to goal</p>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="bg-card rounded-2xl p-4 border border-border shadow-sm text-center"
+              >
+                <Activity className="w-5 h-5 text-primary mx-auto mb-2" />
+                <p className="text-xs text-muted-foreground mb-1">Body Fat</p>
+                <p className="text-xl font-heading font-bold text-green-500">
+                  -{bodyFatReduction}%
+                </p>
+                <p className="text-xs text-muted-foreground">projected</p>
+              </motion.div>
+            </div>
 
             {/* Before/After Cards */}
             <div className="grid grid-cols-2 gap-4 max-w-lg mx-auto mb-8">
@@ -236,18 +356,30 @@ const Planos = () => {
               </motion.div>
             </div>
 
-            {/* Objective Badge */}
+            {/* Personalized Analysis Message */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.3 }}
-              className="flex justify-center mb-8"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              className="bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10 border border-primary/20 rounded-2xl p-5 max-w-2xl mx-auto mb-8"
             >
-              <div className="inline-flex items-center gap-2 bg-secondary/50 text-secondary-foreground px-4 sm:px-6 py-3 rounded-full">
-                <TrendingDown className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span className="font-semibold text-sm sm:text-base">
-                  Your objective: lose {weightToLose} kg
-                </span>
+              <div className="flex items-start gap-3">
+                <div className="p-2 bg-primary rounded-lg text-primary-foreground">
+                  <Sparkles className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-heading font-semibold text-foreground mb-2">
+                    Based on Your Answers
+                  </h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    Your BMI of <span className="font-semibold text-foreground">{bmi.toFixed(1)}</span> is currently 
+                    {bmi >= 25 ? " above the recommended range" : " within a healthy range"}. 
+                    Your personalized SlimVita plan is designed to safely guide you from 
+                    <span className="font-semibold text-foreground"> {userData.currentWeight}kg</span> to your goal weight of 
+                    <span className="font-semibold text-foreground"> {userData.targetWeight}kg</span> in approximately 
+                    <span className="font-semibold text-primary"> {estimatedWeeks} weeks</span>.
+                  </p>
+                </div>
               </div>
             </motion.div>
 
@@ -262,22 +394,18 @@ const Planos = () => {
                 Expected Weight Loss Journey
               </h3>
               <div className="relative h-48 sm:h-56">
-                {/* Y-axis labels */}
                 <div className="absolute left-0 top-0 bottom-8 w-12 flex flex-col justify-between text-xs text-muted-foreground">
                   <span>{userData.currentWeight} kg</span>
                   <span>{Math.round((userData.currentWeight + userData.targetWeight) / 2)} kg</span>
                   <span>{userData.targetWeight} kg</span>
                 </div>
                 
-                {/* Graph area */}
                 <div className="ml-14 h-40 sm:h-48 relative">
                   <svg className="w-full h-full" viewBox="0 0 400 150" preserveAspectRatio="none">
-                    {/* Grid lines */}
                     <line x1="0" y1="0" x2="400" y2="0" stroke="currentColor" strokeOpacity="0.1" />
                     <line x1="0" y1="75" x2="400" y2="75" stroke="currentColor" strokeOpacity="0.1" />
                     <line x1="0" y1="150" x2="400" y2="150" stroke="currentColor" strokeOpacity="0.1" />
                     
-                    {/* Weight curve */}
                     <defs>
                       <linearGradient id="weightGradient" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.3" />
@@ -304,15 +432,11 @@ const Planos = () => {
                       strokeLinecap="round"
                     />
                     
-                    {/* Start point */}
                     <circle cx="0" cy="5" r="6" fill="hsl(var(--primary))" />
-                    
-                    {/* End point */}
                     <circle cx="400" cy="145" r="6" fill="hsl(var(--primary))" />
                   </svg>
                 </div>
                 
-                {/* X-axis labels */}
                 <div className="ml-14 flex justify-between text-xs text-muted-foreground mt-2">
                   <span>Now</span>
                   <span>Week 4</span>
@@ -341,7 +465,7 @@ const Planos = () => {
                 </motion.div>
                 <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
                   <span className="text-xs sm:text-sm font-medium opacity-90">
-                    Your personalized plan expires in:
+                    Your personalized plan is reserved for:
                   </span>
                   <motion.span 
                     className="font-heading font-bold text-xl sm:text-2xl"
@@ -355,6 +479,36 @@ const Planos = () => {
               <p className="text-center text-xs text-muted-foreground mt-2">
                 ⚠️ After expiration, you'll need to retake the assessment
               </p>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Social Proof Banner */}
+        <section className="py-4 bg-primary/5 border-y border-primary/10">
+          <div className="container mx-auto px-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="flex flex-wrap items-center justify-center gap-4 sm:gap-8 text-sm"
+            >
+              <div className="flex items-center gap-2">
+                <Users className="w-4 h-4 text-primary" />
+                <span className="text-muted-foreground">
+                  <span className="font-semibold text-foreground">150,000+</span> users transformed
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Award className="w-4 h-4 text-primary" />
+                <span className="text-muted-foreground">
+                  <span className="font-semibold text-foreground">Rated #1</span> wellness program 2025
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Shield className="w-4 h-4 text-primary" />
+                <span className="text-muted-foreground">
+                  <span className="font-semibold text-foreground">100%</span> secure & private
+                </span>
+              </div>
             </motion.div>
           </div>
         </section>
@@ -390,7 +544,6 @@ const Planos = () => {
                       : "bg-card border-2 border-border hover:border-primary/30"
                   )}
                 >
-                  {/* Badge */}
                   {plan.badge && (
                     <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-secondary text-secondary-foreground px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-md">
                       <Star className="w-3 h-3 fill-current" />
@@ -431,7 +584,7 @@ const Planos = () => {
                     </div>
 
                     <Button
-                      asChild
+                      onClick={() => handleSelectPlan(plan)}
                       className={cn(
                         "w-full py-5 text-sm font-semibold rounded-xl",
                         plan.highlighted
@@ -439,10 +592,8 @@ const Planos = () => {
                           : "bg-primary text-primary-foreground hover:bg-primary-dark"
                       )}
                     >
-                      <Link to="/confirmacao">
-                        Get Plan
-                        <ChevronRight className="w-4 h-4 ml-1" />
-                      </Link>
+                      Get Plan
+                      <ChevronRight className="w-4 h-4 ml-1" />
                     </Button>
                   </div>
                 </motion.div>
@@ -472,7 +623,7 @@ const Planos = () => {
           </div>
         </section>
 
-        {/* Testimonials Section */}
+        {/* Dynamic Testimonials Section */}
         <section className="py-8 sm:py-12 bg-accent/30">
           <div className="container mx-auto px-4">
             <motion.div
@@ -481,10 +632,10 @@ const Planos = () => {
               className="text-center mb-8"
             >
               <h2 className="text-xl sm:text-2xl md:text-3xl font-heading font-bold text-foreground mb-2">
-                Real Results from Real People
+                People With Similar Goals
               </h2>
               <p className="text-muted-foreground text-sm sm:text-base">
-                Join thousands who've transformed their lives
+                Users with goals similar to yours achieved visible results in the first 21 days
               </p>
             </motion.div>
 
@@ -508,16 +659,30 @@ const Planos = () => {
                         {testimonial.name}
                       </h4>
                       <div className="flex items-center gap-1">
-                        <Star className="w-3 h-3 fill-secondary text-secondary" />
-                        <span className="text-xs text-muted-foreground">
+                        {[...Array(5)].map((_, i) => (
+                          <Star 
+                            key={i} 
+                            className={cn(
+                              "w-3 h-3",
+                              i < Math.floor(testimonial.rating) 
+                                ? "fill-secondary text-secondary" 
+                                : "text-muted"
+                            )} 
+                          />
+                        ))}
+                        <span className="text-xs text-muted-foreground ml-1">
                           {testimonial.rating.toFixed(1)}
                         </span>
                       </div>
                     </div>
                   </div>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
+                  <p className="text-sm text-muted-foreground leading-relaxed mb-3">
                     "{testimonial.text}"
                   </p>
+                  <div className="inline-flex items-center gap-1 bg-primary/10 text-primary text-xs px-2 py-1 rounded-full">
+                    <Check className="w-3 h-3" />
+                    {testimonial.achievement}
+                  </div>
                 </motion.div>
               ))}
             </div>
@@ -535,18 +700,21 @@ const Planos = () => {
                 Start Your Transformation Today
               </h2>
               <p className="text-primary-foreground/80 text-sm sm:text-base mb-6 max-w-md mx-auto">
-                Don't wait — your personalized plan expires in {formatTime(timeLeft)}
+                Your personalized plan is reserved for a limited time. Don't miss this opportunity.
               </p>
-              <Button
-                asChild
-                size="lg"
-                className="bg-white text-primary-dark hover:bg-white/90 px-8 py-6 text-base font-semibold rounded-xl"
-              >
-                <Link to="/confirmacao">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-4">
+                <Button
+                  onClick={() => handleSelectPlan(plans[2])}
+                  size="lg"
+                  className="bg-white text-primary-dark hover:bg-white/90 px-8 py-6 text-base font-semibold rounded-xl"
+                >
                   Get Started Now
                   <ChevronRight className="w-5 h-5 ml-2" />
-                </Link>
-              </Button>
+                </Button>
+              </div>
+              <p className="text-primary-foreground/60 text-xs">
+                ⚡ Expires in {formatTime(timeLeft)} — Your personalized plan awaits
+              </p>
             </motion.div>
           </div>
         </section>
