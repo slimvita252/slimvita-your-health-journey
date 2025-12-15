@@ -32,10 +32,27 @@ function calcBmi(weightKg: number, heightCm: number) {
   return weightKg / (h * h);
 }
 
-function pickTemplate(gender: "male" | "female", bmi: number) {
-  // Lightweight templates (fast, consistent). We only need a few tiers for credibility.
-  if (bmi >= 27) return gender === "female" ? femaleOverweight : maleOverweight;
-  if (bmi >= 22) return gender === "female" ? femaleAverage : maleAverage;
+function pickBeforeTemplate(gender: "male" | "female", bmi: number) {
+  // Before avatar: always show heavier body based on current BMI
+  if (bmi >= 30) return gender === "female" ? femaleOverweight : maleOverweight;
+  if (bmi >= 25) return gender === "female" ? femaleOverweight : maleOverweight;
+  return gender === "female" ? femaleAverage : maleAverage;
+}
+
+function pickAfterTemplate(gender: "male" | "female", goalBmi: number, currentBmi: number) {
+  // After avatar: MUST be visually different (slimmer) than before
+  // Always show a slimmer category than the before image
+  if (currentBmi >= 27) {
+    // If before is overweight, after should be average or fit
+    return goalBmi < 22 
+      ? (gender === "female" ? femaleFit : maleFit)
+      : (gender === "female" ? femaleAverage : maleAverage);
+  }
+  if (currentBmi >= 22) {
+    // If before is average, after should be fit
+    return gender === "female" ? femaleFit : maleFit;
+  }
+  // If already fit category, still show fit (but this is edge case)
   return gender === "female" ? femaleFit : maleFit;
 }
 
@@ -49,8 +66,8 @@ const BodyTransformationSection = ({ userData }: BodyTransformationSectionProps)
   const currentBmi = calcBmi(currentWeight, heightCm);
   const goalBmi = calcBmi(goalWeight, heightCm);
 
-  const currentImg = useMemo(() => pickTemplate(gender, currentBmi), [gender, currentBmi]);
-  const goalImg = useMemo(() => pickTemplate(gender, goalBmi), [gender, goalBmi]);
+  const currentImg = useMemo(() => pickBeforeTemplate(gender, currentBmi), [gender, currentBmi]);
+  const goalImg = useMemo(() => pickAfterTemplate(gender, goalBmi, currentBmi), [gender, goalBmi, currentBmi]);
 
   const weightDiff = Math.max(0, currentWeight - goalWeight);
 
