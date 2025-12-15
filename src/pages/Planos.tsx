@@ -174,14 +174,16 @@ const Planos = () => {
       {plans.map((plan, index) => (
         <motion.div
           key={plan.id}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.05 * index }}
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.4, delay: 0.1 * index, ease: "easeOut" }}
+          whileHover={{ scale: 1.02 }}
           className={cn(
-            "relative rounded-2xl p-4 transition-all",
+            "relative rounded-2xl p-4 transition-shadow duration-300",
             plan.highlighted
-              ? "bg-primary text-primary-foreground shadow-lg"
-              : "bg-card border border-border"
+              ? "bg-primary text-primary-foreground shadow-lg hover:shadow-xl"
+              : "bg-card border border-border hover:shadow-md"
           )}
         >
           {plan.badge && (
