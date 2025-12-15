@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Check, ChevronRight, Clock, Shield, Star, Zap } from "lucide-react";
 
 import BodyTransformationSection from "@/components/BodyTransformationSection";
-import CheckoutLoadingScreen from "@/components/CheckoutLoadingScreen";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
@@ -110,8 +109,6 @@ const getTestimonials = (weightToLose: number, gender: string) => {
 
 const Planos = () => {
   const [timeLeft, setTimeLeft] = useState(9 * 60);
-  const [showCheckout, setShowCheckout] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState<(typeof plans)[0] | null>(null);
   const [userData, setUserData] = useState<UserData>({
     currentWeight: 85,
     targetWeight: 70,
@@ -144,9 +141,9 @@ const Planos = () => {
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 
-  const handleSelectPlan = (plan: (typeof plans)[0]) => {
-    setSelectedPlan(plan);
-    setShowCheckout(true);
+  // Direct redirect - no shared state
+  const redirectToCheckout = (url: string) => {
+    window.location.href = url;
   };
 
   const heightFallbackMeters = 1.65;
@@ -155,11 +152,6 @@ const Planos = () => {
   const estimatedWeeks = Math.max(4, Math.round(weightToLose * 2));
   const testimonials = getTestimonials(weightToLose, userData.gender);
 
-  if (showCheckout && selectedPlan) {
-    return (
-      <CheckoutLoadingScreen userData={userData} planName={selectedPlan.name} checkoutUrl={selectedPlan.checkoutUrl} />
-    );
-  }
 
   const PlansCard = () => (
     <div className="space-y-3">
@@ -200,7 +192,7 @@ const Planos = () => {
             </div>
 
             <Button
-              onClick={() => handleSelectPlan(plan)}
+              onClick={() => redirectToCheckout(plan.checkoutUrl)}
               size="sm"
               className={cn(
                 "rounded-xl font-semibold",
@@ -330,7 +322,7 @@ const Planos = () => {
 
       {/* Mobile: Sticky CTA */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-background border-t border-border p-3 shadow-lg">
-        <Button onClick={() => handleSelectPlan(plans[2])} className="w-full py-5 font-bold rounded-xl">
+        <Button onClick={() => redirectToCheckout("https://slimvita.mycartpanda.com/checkout/204737671:1")} className="w-full py-5 font-bold rounded-xl">
           Get Your Plan — ${plans[2].price}
           <ChevronRight className="w-5 h-5 ml-2" />
         </Button>
