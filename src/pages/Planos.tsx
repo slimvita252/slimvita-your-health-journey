@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import CheckoutLoadingScreen from "@/components/CheckoutLoadingScreen";
+import BodyTransformationSection from "@/components/BodyTransformationSection";
 
 interface UserData {
   currentWeight: number;
@@ -382,6 +383,16 @@ const Planos = () => {
                 </div>
               </div>
             </motion.div>
+
+            {/* AI Body Transformation Preview */}
+            <BodyTransformationSection 
+              userData={{
+                gender: userData.gender,
+                currentWeight: userData.currentWeight,
+                goalWeight: userData.targetWeight,
+                ageRange: undefined,
+              }}
+            />
 
             {/* Weight Timeline Graph */}
             <motion.div
