@@ -117,6 +117,19 @@ const Planos = () => {
     gender: "female",
   });
 
+  // Load CartPanda script only on this page
+  useEffect(() => {
+    const scriptId = "cartpanda-script";
+    if (!document.getElementById(scriptId)) {
+      const script = document.createElement("script");
+      script.id = scriptId;
+      script.src = "https://assets.mycartpanda.com/cartx-ecomm-ui-assets/js/cpsales.js";
+      script.type = "text/javascript";
+      script.async = true;
+      document.head.appendChild(script);
+    }
+  }, []);
+
   useEffect(() => {
     const storedData = sessionStorage.getItem("slimvita-user-data");
     if (storedData) {
