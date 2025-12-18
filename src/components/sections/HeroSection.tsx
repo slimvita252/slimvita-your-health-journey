@@ -1,9 +1,12 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, Star, Users, TrendingUp, Award, CheckCircle } from "lucide-react";
+import { ArrowRight, Star, TrendingUp, Award, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const HeroSection = () => {
+  const { t } = useLanguage();
+
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden">
       {/* Background Image - Walking/Fitness focused */}
@@ -54,7 +57,7 @@ const HeroSection = () => {
               ))}
             </div>
             <div>
-              <p className="text-white text-sm">Join 150K+ users</p>
+              <p className="text-white text-sm">{t("hero.activeUsers")}</p>
               <div className="flex gap-0.5">
                 {[1,2,3,4,5].map(i => <Star key={i} className="w-3 h-3 text-yellow-400 fill-yellow-400" />)}
               </div>
@@ -75,7 +78,7 @@ const HeroSection = () => {
           >
             <Award className="w-5 h-5 text-yellow-400" />
             <span className="text-white/90 text-sm font-medium">
-              #1 Walking-Based Weight Loss Program in America
+              {t("hero.badge")}
             </span>
           </motion.div>
 
@@ -86,8 +89,8 @@ const HeroSection = () => {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="text-5xl sm:text-6xl md:text-7xl font-heading font-bold text-white mb-6 leading-[1.05]"
           >
-            Walk Your Way to
-            <span className="block text-primary mt-2">Real Results</span>
+            {t("hero.title1")}
+            <span className="block text-primary mt-2">{t("hero.title2")}</span>
           </motion.h1>
 
           {/* Subtitle */}
@@ -97,8 +100,7 @@ const HeroSection = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-xl md:text-2xl text-white/85 max-w-xl mb-8 leading-relaxed"
           >
-            Get a personalized walking plan based on your goals, fitness level, and schedule. 
-            See visible results in just weeks — no gym required.
+            {t("hero.subtitle")}
           </motion.p>
 
           {/* Benefits Quick List */}
@@ -108,7 +110,12 @@ const HeroSection = () => {
             transition={{ duration: 0.6, delay: 0.25 }}
             className="flex flex-wrap gap-4 mb-10"
           >
-            {["Personalized Plans", "Nutrition Guidance", "Progress Tracking", "Expert Support"].map((item) => (
+            {[
+              t("benefits.1.title"),
+              t("benefits.5.title"),
+              t("benefits.3.title"),
+              t("benefits.4.title")
+            ].map((item) => (
               <div key={item} className="flex items-center gap-2 text-white/80">
                 <CheckCircle className="w-4 h-4 text-primary" />
                 <span className="text-sm font-medium">{item}</span>
@@ -125,13 +132,13 @@ const HeroSection = () => {
           >
             <Button asChild size="lg" className="bg-primary hover:bg-primary-dark text-white font-semibold px-10 py-7 text-lg rounded-full shadow-2xl hover:shadow-primary/40 transition-all duration-300 hover:scale-105">
               <Link to="/questionario">
-                Start Your Personal Assessment
+                {t("hero.cta1")}
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Link>
             </Button>
             <Button asChild variant="outline" size="lg" className="border-2 border-white/30 text-white hover:bg-white/10 font-semibold px-8 py-7 text-lg rounded-full backdrop-blur-sm">
               <Link to="/planos">
-                View Plans & Pricing
+                {t("hero.cta2")}
               </Link>
             </Button>
           </motion.div>
@@ -145,15 +152,15 @@ const HeroSection = () => {
           >
             <div className="text-center">
               <p className="text-3xl md:text-4xl font-bold text-white">150K+</p>
-              <p className="text-white/70 text-sm mt-1">Active Users</p>
+              <p className="text-white/70 text-sm mt-1">{t("cta.stat1")}</p>
             </div>
             <div className="text-center border-x border-white/20">
               <p className="text-3xl md:text-4xl font-bold text-white">94%</p>
-              <p className="text-white/70 text-sm mt-1">See Results</p>
+              <p className="text-white/70 text-sm mt-1">{t("cta.stat2")}</p>
             </div>
             <div className="text-center">
               <p className="text-3xl md:text-4xl font-bold text-white">4.9</p>
-              <p className="text-white/70 text-sm mt-1">Star Rating</p>
+              <p className="text-white/70 text-sm mt-1">{t("cta.stat3")}</p>
             </div>
           </motion.div>
         </div>
