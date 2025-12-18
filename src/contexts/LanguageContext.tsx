@@ -28,27 +28,7 @@ const languageMap: Record<string, Language> = {
 };
 
 const detectLanguage = (): Language => {
-  // Check localStorage first
-  const stored = localStorage.getItem(STORAGE_KEY);
-  if (stored && SUPPORTED_LANGUAGES.includes(stored as Language)) {
-    return stored as Language;
-  }
-
-  // Detect from browser
-  const browserLang = navigator.language || (navigator as any).userLanguage || "en";
-  
-  // Try exact match first
-  if (languageMap[browserLang]) {
-    return languageMap[browserLang];
-  }
-  
-  // Try base language code
-  const baseLang = browserLang.split("-")[0];
-  if (languageMap[baseLang]) {
-    return languageMap[baseLang];
-  }
-
-  // Default to English
+  // Always return English - site is English only
   return "en";
 };
 
