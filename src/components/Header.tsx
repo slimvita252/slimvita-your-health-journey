@@ -5,11 +5,13 @@ import { Button } from "@/components/ui/button";
 import Logo from "./Logo";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const { t } = useLanguage();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -32,11 +34,11 @@ const Header = () => {
   }, [isMobileMenuOpen]);
 
   const navLinks = [
-    { href: "/planos", label: "Home" },
-    { href: "/planos#how-it-works", label: "How It Works" },
-    { href: "/planos#testimonials", label: "Success Stories" },
-    { href: "/planos", label: "Plans" },
-    { href: "/planos#support", label: "Support" },
+    { href: "/planos", label: t("nav.home") },
+    { href: "/planos#how-it-works", label: t("nav.howItWorks") },
+    { href: "/planos#testimonials", label: t("nav.successStories") },
+    { href: "/planos", label: t("nav.plans") },
+    { href: "/planos#support", label: t("nav.support") },
   ];
 
   const isHomePage = location.pathname === "/" || location.pathname === "/questionario";
@@ -90,7 +92,7 @@ const Header = () => {
                   : "bg-primary text-primary-foreground hover:bg-primary-dark shadow-md hover:shadow-lg"
               )}
             >
-              <Link to="/">Start Assessment</Link>
+              <Link to="/">{t("nav.startAssessment")}</Link>
             </Button>
           </div>
 
@@ -175,12 +177,12 @@ const Header = () => {
                     className="w-full py-6 text-base font-semibold rounded-xl bg-primary hover:bg-primary-dark"
                   >
                     <Link to="/" onClick={closeMobileMenu}>
-                      Start Your Assessment
+                      {t("nav.startAssessmentFull")}
                       <ArrowRight className="w-4 h-4 ml-2" />
                     </Link>
                   </Button>
                   <p className="text-center text-xs text-muted-foreground">
-                    Join 150,000+ users transforming their health
+                    {t("nav.joinUsers")}
                   </p>
                 </div>
               </div>

@@ -2,9 +2,11 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import Logo from "./Logo";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const IntroScreen = () => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [phase, setPhase] = useState<"loading" | "hero" | "transitioning">("loading");
   const [progress, setProgress] = useState(0);
 
@@ -91,7 +93,7 @@ const IntroScreen = () => {
                   />
                 </div>
                 <p className="mt-3 text-white/60 text-sm text-center">
-                  Preparing your experience...
+                  {t("intro.preparing")}
                 </p>
               </div>
             </motion.div>
@@ -124,8 +126,8 @@ const IntroScreen = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
               >
-                Walk Your Way to a
-                <span className="block text-primary mt-2">Healthier You</span>
+                {t("intro.headline1")}
+                <span className="block text-primary mt-2">{t("intro.headline2")}</span>
               </motion.h1>
 
               {/* Subheadline */}
@@ -135,8 +137,7 @@ const IntroScreen = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
               >
-                Get a personalized walking plan designed for your body, goals, and lifestyle. 
-                No gym required — just results.
+                {t("intro.subheadline")}
               </motion.p>
 
               {/* Loading indicator for auto-redirect */}
@@ -163,7 +164,7 @@ const IntroScreen = () => {
                     />
                   ))}
                 </div>
-                <span className="text-white/60 text-sm">Starting your assessment...</span>
+                <span className="text-white/60 text-sm">{t("intro.starting")}</span>
               </motion.div>
             </motion.div>
           )}
@@ -178,9 +179,9 @@ const IntroScreen = () => {
         transition={{ delay: 0.6 }}
       >
         {[
-          { value: "150K+", label: "Users" },
-          { value: "94%", label: "Success" },
-          { value: "4.9★", label: "Rating" },
+          { value: "150K+", label: t("intro.users") },
+          { value: "94%", label: t("intro.success") },
+          { value: "4.9★", label: t("intro.rating") },
         ].map((stat, i) => (
           <div key={i} className="text-center">
             <p className="text-xl md:text-2xl font-bold text-white">{stat.value}</p>
