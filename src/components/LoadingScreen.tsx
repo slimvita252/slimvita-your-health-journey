@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Logo from "./Logo";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface LoadingScreenProps {
   onComplete: () => void;
@@ -8,6 +9,7 @@ interface LoadingScreenProps {
 
 const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
   const [progress, setProgress] = useState(0);
+  const { t } = useLanguage();
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -64,7 +66,7 @@ const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
           >
-            Transform Your Health Through Walking
+            {t("loading.tagline")}
           </motion.p>
 
           {/* Progress Bar */}
@@ -78,7 +80,7 @@ const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
               />
             </div>
             <div className="mt-3 flex justify-between items-center">
-              <span className="text-primary-foreground/60 text-sm">Loading your experience</span>
+              <span className="text-primary-foreground/60 text-sm">{t("loading.progress")}</span>
               <span className="text-primary-foreground font-semibold">{progress}%</span>
             </div>
           </div>
@@ -110,7 +112,7 @@ const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
         >
-          Personalized Walking Plans for Real Results
+          {t("loading.bottomText")}
         </motion.p>
       </motion.div>
     </AnimatePresence>

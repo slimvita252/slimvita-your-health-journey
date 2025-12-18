@@ -424,9 +424,41 @@ const translations: Record<Language, Record<string, string>> = {
     "plans.targetWeight": "Target Weight",
     "plans.toTransform": "to transform",
     
-    // Loading
+    // Loading & Intro
     "loading.title": "SlimVita",
     "loading.subtitle": "Your transformation begins now",
+    "loading.tagline": "Transform Your Health Through Walking",
+    "loading.progress": "Loading your experience",
+    "loading.bottomText": "Personalized Walking Plans for Real Results",
+    
+    // Intro Screen
+    "intro.preparing": "Preparing your experience...",
+    "intro.headline1": "Walk Your Way to a",
+    "intro.headline2": "Healthier You",
+    "intro.subheadline": "Get a personalized walking plan designed for your body, goals, and lifestyle. No gym required — just results.",
+    "intro.starting": "Starting your assessment...",
+    "intro.users": "Users",
+    "intro.success": "Success",
+    "intro.rating": "Rating",
+    
+    // Header Extra
+    "nav.successStories": "Success Stories",
+    "nav.support": "Support",
+    "nav.startAssessmentFull": "Start Your Assessment",
+    "nav.joinUsers": "Join 150,000+ users transforming their health",
+    
+    // Confirmation Page
+    "confirmation.title": "Thank you! Your SlimVita plan is active!",
+    "confirmation.subtitle": "We've sent an email with all the details of your plan and your exclusive access to the tracking dashboard.",
+    "confirmation.checkEmail": "Check your email",
+    "confirmation.checkEmailDesc": "We've sent your access credentials",
+    "confirmation.accessDashboard": "Access dashboard",
+    "confirmation.accessDashboardDesc": "Your dashboard is ready",
+    "confirmation.startTomorrow": "Start tomorrow",
+    "confirmation.startTomorrowDesc": "Your first workout awaits",
+    "confirmation.accessPanel": "Access Dashboard",
+    "confirmation.backHome": "Back to Home",
+    "confirmation.needHelp": "Need help? Contact us:",
     
     // Common
     "common.kg": "kg",
@@ -805,9 +837,41 @@ const translations: Record<Language, Record<string, string>> = {
     "plans.targetWeight": "Peso Objetivo",
     "plans.toTransform": "para transformar",
     
-    // Loading
+    // Loading & Intro
     "loading.title": "SlimVita",
     "loading.subtitle": "Tu transformación comienza ahora",
+    "loading.tagline": "Transforma Tu Salud Caminando",
+    "loading.progress": "Cargando tu experiencia",
+    "loading.bottomText": "Planes de Caminata Personalizados para Resultados Reales",
+    
+    // Intro Screen
+    "intro.preparing": "Preparando tu experiencia...",
+    "intro.headline1": "Camina Hacia una",
+    "intro.headline2": "Vida Más Saludable",
+    "intro.subheadline": "Obtén un plan de caminata personalizado diseñado para tu cuerpo, metas y estilo de vida. Sin gimnasio — solo resultados.",
+    "intro.starting": "Iniciando tu evaluación...",
+    "intro.users": "Usuarios",
+    "intro.success": "Éxito",
+    "intro.rating": "Calificación",
+    
+    // Header Extra
+    "nav.successStories": "Historias de Éxito",
+    "nav.support": "Soporte",
+    "nav.startAssessmentFull": "Inicia Tu Evaluación",
+    "nav.joinUsers": "Únete a +150,000 usuarios transformando su salud",
+    
+    // Confirmation Page
+    "confirmation.title": "¡Gracias! ¡Tu plan SlimVita está activo!",
+    "confirmation.subtitle": "Te hemos enviado un correo con todos los detalles de tu plan y tu acceso exclusivo al panel de seguimiento.",
+    "confirmation.checkEmail": "Revisa tu correo",
+    "confirmation.checkEmailDesc": "Enviamos tus credenciales de acceso",
+    "confirmation.accessDashboard": "Accede al panel",
+    "confirmation.accessDashboardDesc": "Tu panel está listo",
+    "confirmation.startTomorrow": "Comienza mañana",
+    "confirmation.startTomorrowDesc": "Tu primer entrenamiento te espera",
+    "confirmation.accessPanel": "Acceder al Panel",
+    "confirmation.backHome": "Volver al Inicio",
+    "confirmation.needHelp": "¿Necesitas ayuda? Contáctanos:",
     
     // Common
     "common.kg": "kg",
@@ -1186,9 +1250,41 @@ const translations: Record<Language, Record<string, string>> = {
     "plans.targetWeight": "Peso Alvo",
     "plans.toTransform": "para transformar",
     
-    // Loading
+    // Loading & Intro
     "loading.title": "SlimVita",
     "loading.subtitle": "Sua transformação começa agora",
+    "loading.tagline": "Transforme Sua Saúde Caminhando",
+    "loading.progress": "Carregando sua experiência",
+    "loading.bottomText": "Planos de Caminhada Personalizados para Resultados Reais",
+    
+    // Intro Screen
+    "intro.preparing": "Preparando sua experiência...",
+    "intro.headline1": "Caminhe Rumo a uma",
+    "intro.headline2": "Vida Mais Saudável",
+    "intro.subheadline": "Obtenha um plano de caminhada personalizado para seu corpo, objetivos e estilo de vida. Sem academia — apenas resultados.",
+    "intro.starting": "Iniciando sua avaliação...",
+    "intro.users": "Usuários",
+    "intro.success": "Sucesso",
+    "intro.rating": "Avaliação",
+    
+    // Header Extra
+    "nav.successStories": "Histórias de Sucesso",
+    "nav.support": "Suporte",
+    "nav.startAssessmentFull": "Inicie Sua Avaliação",
+    "nav.joinUsers": "Junte-se a +150.000 usuários transformando sua saúde",
+    
+    // Confirmation Page
+    "confirmation.title": "Obrigado! Seu plano SlimVita está ativo!",
+    "confirmation.subtitle": "Enviamos um e-mail com todos os detalhes do seu plano e seu acesso exclusivo ao painel de acompanhamento.",
+    "confirmation.checkEmail": "Verifique seu email",
+    "confirmation.checkEmailDesc": "Enviamos suas credenciais de acesso",
+    "confirmation.accessDashboard": "Acesse o painel",
+    "confirmation.accessDashboardDesc": "Seu dashboard está pronto",
+    "confirmation.startTomorrow": "Comece amanhã",
+    "confirmation.startTomorrowDesc": "Seu primeiro treino te espera",
+    "confirmation.accessPanel": "Acessar Painel",
+    "confirmation.backHome": "Voltar ao Início",
+    "confirmation.needHelp": "Precisa de ajuda? Entre em contato:",
     
     // Common
     "common.kg": "kg",
@@ -1567,9 +1663,41 @@ const translations: Record<Language, Record<string, string>> = {
     "plans.targetWeight": "目标体重",
     "plans.toTransform": "待转变",
     
-    // Loading
+    // Loading & Intro
     "loading.title": "SlimVita",
     "loading.subtitle": "您的转型现在开始",
+    "loading.tagline": "通过步行改变您的健康",
+    "loading.progress": "正在加载您的体验",
+    "loading.bottomText": "个性化步行计划带来真实效果",
+    
+    // Intro Screen
+    "intro.preparing": "正在准备您的体验...",
+    "intro.headline1": "走向更",
+    "intro.headline2": "健康的您",
+    "intro.subheadline": "获取为您的身体、目标和生活方式量身定制的个性化步行计划。无需健身房——只有结果。",
+    "intro.starting": "正在开始您的评估...",
+    "intro.users": "用户",
+    "intro.success": "成功率",
+    "intro.rating": "评分",
+    
+    // Header Extra
+    "nav.successStories": "成功故事",
+    "nav.support": "支持",
+    "nav.startAssessmentFull": "开始您的评估",
+    "nav.joinUsers": "加入150,000+正在改变健康的用户",
+    
+    // Confirmation Page
+    "confirmation.title": "谢谢！您的SlimVita计划已激活！",
+    "confirmation.subtitle": "我们已发送电子邮件，包含您计划的所有详细信息以及您的专属跟踪面板访问权限。",
+    "confirmation.checkEmail": "检查您的邮箱",
+    "confirmation.checkEmailDesc": "我们已发送您的访问凭证",
+    "confirmation.accessDashboard": "访问面板",
+    "confirmation.accessDashboardDesc": "您的仪表板已准备就绪",
+    "confirmation.startTomorrow": "明天开始",
+    "confirmation.startTomorrowDesc": "您的第一次训练正在等待",
+    "confirmation.accessPanel": "访问面板",
+    "confirmation.backHome": "返回首页",
+    "confirmation.needHelp": "需要帮助？联系我们：",
     
     // Common
     "common.kg": "公斤",
@@ -1948,9 +2076,41 @@ const translations: Record<Language, Record<string, string>> = {
     "plans.targetWeight": "Poids Cible",
     "plans.toTransform": "à transformer",
     
-    // Loading
+    // Loading & Intro
     "loading.title": "SlimVita",
     "loading.subtitle": "Votre transformation commence maintenant",
+    "loading.tagline": "Transformez Votre Santé en Marchant",
+    "loading.progress": "Chargement de votre expérience",
+    "loading.bottomText": "Plans de Marche Personnalisés pour des Résultats Réels",
+    
+    // Intro Screen
+    "intro.preparing": "Préparation de votre expérience...",
+    "intro.headline1": "Marchez Vers une",
+    "intro.headline2": "Vie Plus Saine",
+    "intro.subheadline": "Obtenez un plan de marche personnalisé pour votre corps, vos objectifs et votre style de vie. Pas de gym — juste des résultats.",
+    "intro.starting": "Démarrage de votre évaluation...",
+    "intro.users": "Utilisateurs",
+    "intro.success": "Succès",
+    "intro.rating": "Note",
+    
+    // Header Extra
+    "nav.successStories": "Témoignages",
+    "nav.support": "Support",
+    "nav.startAssessmentFull": "Commencez Votre Évaluation",
+    "nav.joinUsers": "Rejoignez +150 000 utilisateurs qui transforment leur santé",
+    
+    // Confirmation Page
+    "confirmation.title": "Merci ! Votre plan SlimVita est actif !",
+    "confirmation.subtitle": "Nous vous avons envoyé un email avec tous les détails de votre plan et votre accès exclusif au tableau de bord.",
+    "confirmation.checkEmail": "Vérifiez votre email",
+    "confirmation.checkEmailDesc": "Nous avons envoyé vos identifiants d'accès",
+    "confirmation.accessDashboard": "Accédez au tableau de bord",
+    "confirmation.accessDashboardDesc": "Votre tableau de bord est prêt",
+    "confirmation.startTomorrow": "Commencez demain",
+    "confirmation.startTomorrowDesc": "Votre premier entraînement vous attend",
+    "confirmation.accessPanel": "Accéder au Tableau de Bord",
+    "confirmation.backHome": "Retour à l'Accueil",
+    "confirmation.needHelp": "Besoin d'aide ? Contactez-nous :",
     
     // Common
     "common.kg": "kg",
@@ -2329,9 +2489,41 @@ const translations: Record<Language, Record<string, string>> = {
     "plans.targetWeight": "Zielgewicht",
     "plans.toTransform": "zu transformieren",
     
-    // Loading
+    // Loading & Intro
     "loading.title": "SlimVita",
     "loading.subtitle": "Ihre Transformation beginnt jetzt",
+    "loading.tagline": "Transformieren Sie Ihre Gesundheit durch Gehen",
+    "loading.progress": "Ihre Erfahrung wird geladen",
+    "loading.bottomText": "Personalisierte Gehpläne für Echte Ergebnisse",
+    
+    // Intro Screen
+    "intro.preparing": "Ihre Erfahrung wird vorbereitet...",
+    "intro.headline1": "Gehen Sie Richtung",
+    "intro.headline2": "Gesünderes Leben",
+    "intro.subheadline": "Erhalten Sie einen personalisierten Gehplan für Ihren Körper, Ihre Ziele und Ihren Lebensstil. Kein Fitnessstudio — nur Ergebnisse.",
+    "intro.starting": "Ihre Bewertung wird gestartet...",
+    "intro.users": "Nutzer",
+    "intro.success": "Erfolg",
+    "intro.rating": "Bewertung",
+    
+    // Header Extra
+    "nav.successStories": "Erfolgsgeschichten",
+    "nav.support": "Support",
+    "nav.startAssessmentFull": "Starten Sie Ihre Bewertung",
+    "nav.joinUsers": "Schließen Sie sich +150.000 Nutzern an, die ihre Gesundheit verändern",
+    
+    // Confirmation Page
+    "confirmation.title": "Danke! Ihr SlimVita-Plan ist aktiv!",
+    "confirmation.subtitle": "Wir haben Ihnen eine E-Mail mit allen Details Ihres Plans und Ihrem exklusiven Zugang zum Tracking-Dashboard gesendet.",
+    "confirmation.checkEmail": "Überprüfen Sie Ihre E-Mail",
+    "confirmation.checkEmailDesc": "Wir haben Ihre Zugangsdaten gesendet",
+    "confirmation.accessDashboard": "Auf Dashboard zugreifen",
+    "confirmation.accessDashboardDesc": "Ihr Dashboard ist bereit",
+    "confirmation.startTomorrow": "Starten Sie morgen",
+    "confirmation.startTomorrowDesc": "Ihr erstes Training wartet",
+    "confirmation.accessPanel": "Dashboard Öffnen",
+    "confirmation.backHome": "Zurück zur Startseite",
+    "confirmation.needHelp": "Brauchen Sie Hilfe? Kontaktieren Sie uns:",
     
     // Common
     "common.kg": "kg",
