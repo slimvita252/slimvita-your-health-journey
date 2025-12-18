@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Activity, Flame, Heart, Scale, Target, TrendingDown, Zap } from "lucide-react";
+import { Activity, Flame, Scale, Target, TrendingDown, Zap } from "lucide-react";
 import Logo from "./Logo";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface HealthResults {
   bmi: number;
@@ -24,6 +25,7 @@ interface ResultsScreenProps {
 }
 
 const ResultsScreen = ({ results, onComplete }: ResultsScreenProps) => {
+  const { t } = useLanguage();
   const [currentSection, setCurrentSection] = useState(0);
   const [showAll, setShowAll] = useState(false);
 
@@ -48,6 +50,16 @@ const ResultsScreen = ({ results, onComplete }: ResultsScreenProps) => {
       case "overweight": return "text-orange-500";
       case "obese": return "text-red-500";
       default: return "text-primary";
+    }
+  };
+
+  const translateBMICategory = (category: string) => {
+    switch (category) {
+      case "underweight": return t("results.underweight");
+      case "normal weight": return t("results.normal");
+      case "overweight": return t("results.overweight");
+      case "obese": return t("results.obese");
+      default: return category;
     }
   };
 
@@ -110,11 +122,8 @@ const ResultsScreen = ({ results, onComplete }: ResultsScreenProps) => {
         >
           <Logo variant="dark" className="w-28 md:w-36 mx-auto mb-4" />
           <h1 className="text-2xl md:text-3xl lg:text-4xl font-heading font-bold text-foreground mb-2">
-            Your Personalized Results
+            {t("results.title")}
           </h1>
-          <p className="text-sm md:text-base text-muted-foreground max-w-md mx-auto">
-            Based on your assessment, here's what we found
-          </p>
         </motion.div>
 
         {/* Results Grid */}
@@ -123,9 +132,9 @@ const ResultsScreen = ({ results, onComplete }: ResultsScreenProps) => {
           {currentSection >= 1 && (
             <MetricCard
               icon={Scale}
-              title="Body Mass Index (BMI)"
+              title={t("results.bmi")}
               value={results.bmi.toFixed(1)}
-              unit={`• ${results.bmiCategory}`}
+              unit={`• ${translateBMICategory(results.bmiCategory)}`}
               message={results.bmiMessage}
               delay={0}
               accentColor={getBMICategoryColor(results.bmiCategory)}
@@ -136,9 +145,9 @@ const ResultsScreen = ({ results, onComplete }: ResultsScreenProps) => {
           {currentSection >= 2 && (
             <MetricCard
               icon={Flame}
-              title="Basal Metabolic Rate (BMR)"
+              title={t("results.bmr")}
               value={results.bmr}
-              unit="kcal/day"
+              unit={t("results.calories")}
               message={results.bmrMessage}
               delay={0}
               accentColor="text-orange-500"
@@ -149,9 +158,9 @@ const ResultsScreen = ({ results, onComplete }: ResultsScreenProps) => {
           {currentSection >= 3 && (
             <MetricCard
               icon={Activity}
-              title="Total Daily Energy Expenditure"
+              title={t("results.tdee")}
               value={results.tdee}
-              unit="kcal/day"
+              unit={t("results.calories")}
               message={results.tdeeMessage}
               delay={0}
               accentColor="text-blue-500"
@@ -162,9 +171,9 @@ const ResultsScreen = ({ results, onComplete }: ResultsScreenProps) => {
           {currentSection >= 4 && (
             <MetricCard
               icon={Target}
-              title="Recommended Daily Intake"
+              title={t("results.target")}
               value={results.calorieTarget}
-              unit="kcal/day"
+              unit={t("results.calories")}
               message={results.calorieMessage}
               delay={0}
               accentColor="text-primary"
@@ -185,9 +194,6 @@ const ResultsScreen = ({ results, onComplete }: ResultsScreenProps) => {
                     <Zap className="w-5 h-5 md:w-6 md:h-6" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm md:text-base font-medium text-foreground mb-2">
-                      Your Personalized Plan
-                    </p>
                     <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
                       {results.personalPlanMessage}
                     </p>
@@ -196,11 +202,10 @@ const ResultsScreen = ({ results, onComplete }: ResultsScreenProps) => {
                       <div className="mt-4 flex items-center gap-3 p-3 bg-background/50 rounded-xl">
                         <TrendingDown className="w-5 h-5 text-primary" />
                         <div>
-                          <p className="text-xs text-muted-foreground">Target weight loss</p>
                           <p className="text-lg font-bold text-foreground">
-                            {results.weightToLose.toFixed(1)} kg
+                            {results.weightToLose.toFixed(1)} {t("common.kg")}
                             <span className="text-sm font-normal text-muted-foreground ml-2">
-                              in ~{results.estimatedWeeks} weeks
+                              ~{results.estimatedWeeks} weeks
                             </span>
                           </p>
                         </div>
@@ -222,7 +227,7 @@ const ResultsScreen = ({ results, onComplete }: ResultsScreenProps) => {
                 className="text-center py-6"
               >
                 <p className="text-sm text-muted-foreground mb-3">
-                  Preparing your personalized plans...
+                  {t("results.preparing")}
                 </p>
                 <div className="flex justify-center gap-2">
                   {[0, 1, 2].map((i) => (

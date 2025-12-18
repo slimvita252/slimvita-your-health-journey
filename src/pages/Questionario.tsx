@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, ArrowRight, Mail, Sparkles } from "lucide-react";
@@ -13,6 +13,7 @@ import AnalysisScreen from "@/components/AnalysisScreen";
 import ResultsScreen from "@/components/ResultsScreen";
 import { questions } from "@/data/questionnaireQuestions";
 import { calculateHealthMetrics } from "@/lib/healthCalculations";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface FormData {
   [key: string]: string | string[] | number;
@@ -22,6 +23,7 @@ type ScreenState = "questionnaire" | "analysis" | "results";
 
 const Questionario = () => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [currentStep, setCurrentStep] = useState(0);
   const [screenState, setScreenState] = useState<ScreenState>("questionnaire");
   const [healthResults, setHealthResults] = useState<ReturnType<typeof calculateHealthMetrics> | null>(null);
@@ -32,32 +34,57 @@ const Questionario = () => {
     challenges: [],
   });
 
-  const currentQuestion = questions[currentStep];
-  const totalSteps = questions.length;
+  // Get translated questions
+  const translatedQuestions = useMemo(() => {
+    return questions.map(q => {
+      const titleKey = `quiz.${q.id}.title`;
+      const subtitleKey = `quiz.${q.id}.subtitle`;
+      
+      const translatedOptions = q.options?.map(opt => ({
+        ...opt,
+        label: t(`quiz.${q.id}.${opt.value}`) || opt.label,
+        description: t(`quiz.${q.id}.${opt.value}Desc`) || opt.description,
+      }));
+
+      return {
+        ...q,
+        title: t(titleKey) !== titleKey ? t(titleKey) : q.title,
+        subtitle: t(subtitleKey) !== subtitleKey ? t(subtitleKey) : q.subtitle,
+        options: translatedOptions,
+        placeholder: q.type === "email" ? t("quiz.email.placeholder") : q.placeholder,
+      };
+    });
+  }, [t]);
+
+  const currentQuestion = translatedQuestions[currentStep];
+  const totalSteps = translatedQuestions.length;
 
   const handleSelect = useCallback((value: string) => {
-    if (currentQuestion.type === "multi") {
-      const current = (formData[currentQuestion.id] as string[]) || [];
+    const originalQuestion = questions[currentStep];
+    if (originalQuestion.type === "multi") {
+      const current = (formData[originalQuestion.id] as string[]) || [];
       const updated = current.includes(value)
         ? current.filter((v) => v !== value)
         : [...current, value];
-      setFormData((prev) => ({ ...prev, [currentQuestion.id]: updated }));
+      setFormData((prev) => ({ ...prev, [originalQuestion.id]: updated }));
     } else {
-      setFormData((prev) => ({ ...prev, [currentQuestion.id]: value }));
+      setFormData((prev) => ({ ...prev, [originalQuestion.id]: value }));
       // Auto-advance for single select after a brief delay
-      if (currentQuestion.type === "single" && currentStep < totalSteps - 1) {
+      if (originalQuestion.type === "single" && currentStep < totalSteps - 1) {
         setTimeout(() => setCurrentStep((prev) => prev + 1), 300);
       }
     }
-  }, [currentQuestion, currentStep, totalSteps, formData]);
+  }, [currentStep, totalSteps, formData]);
 
   const handleSliderChange = useCallback((value: number) => {
-    setFormData((prev) => ({ ...prev, [currentQuestion.id]: value }));
-  }, [currentQuestion]);
+    const originalQuestion = questions[currentStep];
+    setFormData((prev) => ({ ...prev, [originalQuestion.id]: value }));
+  }, [currentStep]);
 
   const handleInputChange = useCallback((value: string) => {
-    setFormData((prev) => ({ ...prev, [currentQuestion.id]: value }));
-  }, [currentQuestion]);
+    const originalQuestion = questions[currentStep];
+    setFormData((prev) => ({ ...prev, [originalQuestion.id]: value }));
+  }, [currentStep]);
 
   const handleNext = () => {
     if (currentStep < totalSteps - 1) {
@@ -67,8 +94,8 @@ const Questionario = () => {
       const email = formData.email as string;
       if (!email || !email.includes("@")) {
         toast({
-          title: "Valid email required",
-          description: "Please enter a valid email address.",
+          title: t("quiz.required"),
+          description: t("quiz.requiredDesc"),
           variant: "destructive",
         });
         return;
@@ -116,8 +143,9 @@ const Questionario = () => {
   };
 
   const canProceed = () => {
-    const value = formData[currentQuestion.id];
-    switch (currentQuestion.type) {
+    const originalQuestion = questions[currentStep];
+    const value = formData[originalQuestion.id];
+    switch (originalQuestion.type) {
       case "single":
         return value !== undefined && value !== "";
       case "multi":
@@ -134,7 +162,9 @@ const Questionario = () => {
   };
 
   const renderQuestionContent = () => {
-    switch (currentQuestion.type) {
+    const originalQuestion = questions[currentStep];
+    
+    switch (originalQuestion.type) {
       case "single":
       case "multi":
         return (
@@ -142,21 +172,21 @@ const Questionario = () => {
             title={currentQuestion.title}
             subtitle={currentQuestion.subtitle}
             options={currentQuestion.options}
-            selectedValue={formData[currentQuestion.id] as string | string[]}
+            selectedValue={formData[originalQuestion.id] as string | string[]}
             onSelect={handleSelect}
-            multiSelect={currentQuestion.type === "multi"}
-            backgroundImage={currentQuestion.backgroundImage}
-            columns={currentQuestion.columns}
+            multiSelect={originalQuestion.type === "multi"}
+            backgroundImage={originalQuestion.backgroundImage}
+            columns={originalQuestion.columns}
           />
         );
 
       case "slider":
-        const sliderValue = (formData[currentQuestion.id] as number) || currentQuestion.min || 0;
+        const sliderValue = (formData[originalQuestion.id] as number) || originalQuestion.min || 0;
         return (
           <QuestionnaireStep
             title={currentQuestion.title}
             subtitle={currentQuestion.subtitle}
-            backgroundImage={currentQuestion.backgroundImage}
+            backgroundImage={originalQuestion.backgroundImage}
           >
             <div className="max-w-md mx-auto mt-8">
               <div className="text-center mb-8">
@@ -164,20 +194,20 @@ const Questionario = () => {
                   {sliderValue}
                 </span>
                 <span className="text-2xl text-muted-foreground ml-2">
-                  {currentQuestion.unit}
+                  {originalQuestion.unit}
                 </span>
               </div>
               <input
                 type="range"
-                min={currentQuestion.min}
-                max={currentQuestion.max}
+                min={originalQuestion.min}
+                max={originalQuestion.max}
                 value={sliderValue}
                 onChange={(e) => handleSliderChange(Number(e.target.value))}
                 className="w-full h-3 bg-muted rounded-full appearance-none cursor-pointer accent-primary"
               />
               <div className="flex justify-between text-sm text-muted-foreground mt-2">
-                <span>{currentQuestion.min} {currentQuestion.unit}</span>
-                <span>{currentQuestion.max} {currentQuestion.unit}</span>
+                <span>{originalQuestion.min} {originalQuestion.unit}</span>
+                <span>{originalQuestion.max} {originalQuestion.unit}</span>
               </div>
             </div>
           </QuestionnaireStep>
@@ -195,13 +225,13 @@ const Questionario = () => {
                 <Input
                   type="email"
                   placeholder={currentQuestion.placeholder || "your@email.com"}
-                  value={(formData[currentQuestion.id] as string) || ""}
+                  value={(formData[originalQuestion.id] as string) || ""}
                   onChange={(e) => handleInputChange(e.target.value)}
                   className="pl-12 h-14 rounded-xl border-2 text-base focus:border-primary"
                 />
               </div>
               <p className="text-center text-sm text-muted-foreground mt-4">
-                🔒 Your privacy is protected. We never share your data.
+                🔒 Your privacy is protected.
               </p>
             </div>
           </QuestionnaireStep>
@@ -230,7 +260,7 @@ const Questionario = () => {
           <div className="flex items-center justify-between">
             <Logo variant="dark" />
             <span className="text-xs sm:text-sm text-muted-foreground">
-              Personal Assessment
+              {t("quiz.step")} {currentStep + 1} {t("quiz.of")} {totalSteps}
             </span>
           </div>
         </div>
@@ -277,7 +307,7 @@ const Questionario = () => {
               )}
             >
               <ArrowLeft className="w-4 h-4 mr-1 sm:mr-2" />
-              <span className="hidden xs:inline">Back</span>
+              <span className="hidden xs:inline">{t("quiz.back")}</span>
             </Button>
 
             <div className="flex-1 text-center">
@@ -295,11 +325,11 @@ const Questionario = () => {
               {currentStep === totalSteps - 1 ? (
                 <>
                   <Sparkles className="w-4 h-4 mr-1 sm:mr-2" />
-                  <span>Get Plan</span>
+                  <span>{t("quiz.finish")}</span>
                 </>
               ) : (
                 <>
-                  <span>Continue</span>
+                  <span>{t("quiz.next")}</span>
                   <ArrowRight className="w-4 h-4 ml-1 sm:ml-2" />
                 </>
               )}

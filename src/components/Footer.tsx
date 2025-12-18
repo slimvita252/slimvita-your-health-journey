@@ -1,26 +1,28 @@
 import { Link } from "react-router-dom";
 import { Instagram, Facebook, Youtube, Twitter, Mail, Phone, MapPin, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Footer = () => {
+  const { t } = useLanguage();
   const currentYear = new Date().getFullYear();
 
   const footerLinks = {
     company: [
-      { label: "About Us", href: "/about" },
-      { label: "Blog", href: "/blog" },
-      { label: "Careers", href: "/careers" },
-      { label: "Partners", href: "/partners" },
+      { label: t("footer.about"), href: "/about" },
+      { label: t("footer.blog"), href: "/blog" },
+      { label: t("footer.careers"), href: "/careers" },
+      { label: t("footer.partners"), href: "/partners" },
     ],
     support: [
-      { label: "Help Center", href: "/help" },
-      { label: "Contact Us", href: "/contact" },
-      { label: "FAQ", href: "/faq" },
+      { label: t("footer.helpCenter"), href: "/help" },
+      { label: t("footer.contact"), href: "/contact" },
+      { label: t("footer.faq"), href: "/faq" },
     ],
     legal: [
-      { label: "Terms of Service", href: "/terms" },
-      { label: "Privacy Policy", href: "/privacy" },
-      { label: "Cookie Policy", href: "/cookies" },
+      { label: t("footer.terms"), href: "/terms" },
+      { label: t("footer.privacy"), href: "/privacy" },
+      { label: t("footer.cookies"), href: "/cookies" },
     ],
   };
 
@@ -39,17 +41,16 @@ const Footer = () => {
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div>
               <h3 className="text-2xl font-heading font-bold mb-2">Stay Updated</h3>
-              <p className="text-background/60">Get health tips, workout ideas, and exclusive offers.</p>
+              <p className="text-background/60">{t("footer.description")}</p>
             </div>
             <div className="flex gap-3 w-full md:w-auto">
               <input
                 type="email"
-                placeholder="Enter your email"
+                placeholder="your@email.com"
                 className="flex-1 md:w-80 px-5 py-3 rounded-full bg-background/10 border border-background/20 text-background placeholder:text-background/40 focus:outline-none focus:border-primary"
               />
               <Button className="rounded-full px-6 bg-primary hover:bg-primary-dark">
-                Subscribe
-                <ArrowRight className="w-4 h-4 ml-2" />
+                <ArrowRight className="w-4 h-4" />
               </Button>
             </div>
           </div>
@@ -69,7 +70,7 @@ const Footer = () => {
               </span>
             </Link>
             <p className="text-background/60 mb-6 max-w-sm leading-relaxed">
-              Transform your health through personalized walking plans. Join 150,000+ Americans on their fitness journey.
+              {t("footer.description")}
             </p>
             <div className="flex gap-3">
               {socialLinks.map((social) => (
@@ -89,7 +90,7 @@ const Footer = () => {
 
           {/* Links Columns */}
           <div>
-            <h4 className="font-heading font-semibold text-lg mb-5">Company</h4>
+            <h4 className="font-heading font-semibold text-lg mb-5">{t("footer.company")}</h4>
             <ul className="space-y-3">
               {footerLinks.company.map((link) => (
                 <li key={link.label}>
@@ -102,7 +103,7 @@ const Footer = () => {
           </div>
 
           <div>
-            <h4 className="font-heading font-semibold text-lg mb-5">Support</h4>
+            <h4 className="font-heading font-semibold text-lg mb-5">{t("footer.support")}</h4>
             <ul className="space-y-3">
               {footerLinks.support.map((link) => (
                 <li key={link.label}>
@@ -115,7 +116,7 @@ const Footer = () => {
           </div>
 
           <div>
-            <h4 className="font-heading font-semibold text-lg mb-5">Legal</h4>
+            <h4 className="font-heading font-semibold text-lg mb-5">{t("footer.legal")}</h4>
             <ul className="space-y-3">
               {footerLinks.legal.map((link) => (
                 <li key={link.label}>
@@ -145,7 +146,7 @@ const Footer = () => {
             </span>
           </div>
           <p className="text-background/40 text-sm">
-            © {currentYear} SlimVita. All rights reserved.
+            © {currentYear} SlimVita. {t("footer.rights")}
           </p>
         </div>
       </div>

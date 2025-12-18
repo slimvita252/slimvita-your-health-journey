@@ -1,26 +1,28 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Logo from "./Logo";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface AnalysisScreenProps {
   onComplete: () => void;
 }
 
-const dynamicMessages = [
-  "Evaluating your profile…",
-  "Preparing your personalized treatment path…",
-  "Comparing your data with similar successful cases…",
-  "Optimizing recommendations for your health goals…",
-];
-
 const AnalysisScreen = ({ onComplete }: AnalysisScreenProps) => {
+  const { t } = useLanguage();
   const [messageIndex, setMessageIndex] = useState(0);
   const [progress, setProgress] = useState(0);
+
+  const dynamicMessages = [
+    t("analysis.msg1"),
+    t("analysis.msg2"),
+    t("analysis.msg3"),
+    t("analysis.msg4"),
+  ];
 
   useEffect(() => {
     // Rotate messages every 800ms
     const messageInterval = setInterval(() => {
-      setMessageIndex((prev) => (prev + 1) % dynamicMessages.length);
+      setMessageIndex((prev) => (prev + 1) % 4);
     }, 800);
 
     // Progress animation
@@ -172,7 +174,7 @@ const AnalysisScreen = ({ onComplete }: AnalysisScreenProps) => {
         transition={{ delay: 0.4 }}
         className="text-2xl md:text-3xl lg:text-4xl font-heading font-bold text-foreground text-center mb-3"
       >
-        Analyzing your information…
+        {t("analysis.title")}
       </motion.h1>
 
       {/* Subtext */}
@@ -182,7 +184,7 @@ const AnalysisScreen = ({ onComplete }: AnalysisScreenProps) => {
         transition={{ delay: 0.5 }}
         className="text-base md:text-lg text-muted-foreground text-center max-w-md mb-8 px-4"
       >
-        We're reviewing your data to identify the most effective treatment for your current condition.
+        {t("analysis.subtitle")}
       </motion.p>
 
       {/* Dynamic messages */}
@@ -216,7 +218,7 @@ const AnalysisScreen = ({ onComplete }: AnalysisScreenProps) => {
           />
         </div>
         <p className="text-xs text-muted-foreground text-center mt-2">
-          {progress}% complete
+          {progress}%
         </p>
       </motion.div>
 
